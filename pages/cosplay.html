@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AniMemeStation - Cosplay</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        
+        body {
+            background-color: #432456;
+            background-image: linear-gradient(135deg, #432456 0%, #5a3069 100%);
+            color: #fff;
+            overflow-x: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            padding: 20px;
+            padding-top: calc(10vh);
+        }
+        
+        .container {
+            width: 1500px;
+            max-width: 100%;
+            background-color: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        nav {
+            padding: 25px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-start;
+        }
+        
+        nav a {
+            margin-right: 38px;
+            margin-bottom: 12px;
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+            position: relative;
+            font-size: 20px;
+        }
+		
+		nav a:nth-child(3) {
+            text-decoration: underline;
+            text-underline-offset: 6px;
+        }
+        
+        #content-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 0 25px 25px;
+            overflow-y: auto;
+        }
+        
+        .gallery-title {
+            font-size: 45px;
+            color: #333;
+            font-weight: bold;
+            margin-bottom: 25px;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(-20px);
+            animation: fadeInDown 0.8s forwards;
+        }
+        
+        @keyframes fadeInDown {
+            0% {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .masonry-grid {
+            column-count: 4;
+            column-gap: 20px;
+            width: 100%;
+        }
+        
+        .masonry-item {
+            break-inside: avoid;
+            margin-bottom: 20px;
+            opacity: 0;
+            animation: fadeInUp 0.8s forwards;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .masonry-item:hover {
+            transform: translateY(-5px);
+        }
+        
+        .masonry-item img {
+            width: 100%;
+            display: block;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease;
+        }
+        
+        .masonry-item:hover img {
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
+            transform: scale(1.02);
+        }
+        
+        @keyframes fadeInUp {
+            0% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .load-more-text {
+            text-align: center;
+            color: #73264d;
+            font-size: 18px;
+            font-weight: bold;
+            margin: 30px 0;
+            opacity: 0;
+            animation: fadeIn 1s forwards;
+            display: none;
+        }
+        
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background-color: #73264d;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+            z-index: 100;
+            font-size: 12px;
+        }
+
+        .back-to-top.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .back-to-top svg {
+            margin-bottom: 2px;
+            width: 20px;
+            height: 20px;
+        }
+        
+        .loading-spinner {
+            display: none;
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(115, 38, 77, 0.2);
+            border-radius: 50%;
+            border-top-color: #73264d;
+            animation: spin 1s ease-in-out infinite;
+            margin: 30px auto;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Ad Popup Styles */
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        .popup-container {
+            background-color: white;
+            border-radius: 15px;
+            padding: 25px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transform: scale(0.9);
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .popup-title {
+            font-size: 23px;
+            color: #333;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .ads-container {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 15px;
+        }
+
+        .ad-container {
+            width: 300px;
+            height: 250px;
+            margin: 0 auto 15px;
+            background-color: #f0f0f0;
+            border: 1px solid #ddd;
+            overflow: hidden;
+        }
+
+        /* Fake ad for testing */
+        .fake-ad {
+            width: 300px;
+            height: 250px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #ff9966 0%, #ff5e62 100%);
+            color: white;
+            cursor: pointer;
+            text-align: center;
+            padding: 15px;
+            box-sizing: border-box;
+        }
+
+        .fake-ad.color-1 {
+            background: linear-gradient(135deg, #ff9966 0%, #ff5e62 100%);
+        }
+
+        .fake-ad.color-2 {
+            background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%);
+        }
+
+        .fake-ad.color-3 {
+            background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
+        }
+
+        .fake-ad h3 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .fake-ad p {
+            font-size: 16px;
+            margin-bottom: 15px;
+        }
+
+        .fake-ad button {
+            background-color: white;
+            border: none;
+            color: #ff5e62;
+            padding: 8px 18px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .fake-ad button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Show animation for popup */
+        .popup-overlay.show {
+            opacity: 1;
+            display: flex;
+        }
+
+        .popup-overlay.show .popup-container {
+            transform: scale(1);
+        }
+        
+        /* Responsive styles */
+        @media screen and (max-width: 1200px) {
+            .masonry-grid {
+                column-count: 3;
+            }
+        }
+        
+        @media screen and (max-width: 830px) {
+            body {
+                padding-top: 5vh;
+            }
+            
+            .container {
+                height: auto;
+                min-height: 700px;
+            }
+            
+            nav {
+                justify-content: center;
+            }
+            
+            .gallery-title {
+                font-size: 40px;
+                margin-bottom: 25px;
+            }
+            
+            .masonry-grid {
+                column-count: 2;
+            }
+
+            .back-to-top {
+                width: 50px;
+                height: 50px;
+                font-size: 10px;
+            }
+            
+            .popup-container {
+                padding: 20px;
+                max-width: 90%;
+            }
+            
+            .ads-container {
+                flex-direction: column;
+            }
+        }
+        
+        @media screen and (max-width: 480px) {
+            .container {
+                border-radius: 15px;
+                min-height: 650px;
+            }
+            
+            nav a {
+                margin-right: 15px;
+                font-size: 14px;
+            }
+            
+            .gallery-title {
+                font-size: 30px;
+                margin-bottom: 20px;
+            }
+            
+            .masonry-grid {
+                column-count: 2;
+                column-gap: 10px;
+            }
+            
+            .masonry-item {
+                margin-bottom: 10px;
+            }
+            
+            .popup-container {
+                padding: 15px;
+                width: 95%;
+            }
+            
+            .popup-title {
+                font-size: 21px;
+                margin-bottom: 15px;
+                margin-top: 15px;
+                padding-left: 10px;
+                padding-right: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav>
+		    <a href="../AniMemeStation.html">Meme</a>
+            <a href="../pages/donate.html">Donate</a>
+			<a href="../pages/cosplay.html">Cosplay</a>
+        </nav>
+        
+        <div id="content-container">
+            <div class="gallery-title">Cosplay Gallery</div>
+            
+            <div class="masonry-grid" id="gallery">
+                <!-- Images will be loaded here via JavaScript -->
+            </div>
+            
+            <div class="loading-spinner" id="loadingSpinner"></div>
+            <div class="load-more-text" id="loadMoreText">Hết rồi ! Nhưng sẽ cập nhật thêm sớm thôi</div>
+        </div>
+    </div>
+
+    <button class="back-to-top" id="backToTop">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 15l-6-6-6 6"/>
+        </svg>
+        Lên trên cùng
+    </button>
+    
+    <!-- Ad Popup -->
+    <div class="popup-overlay" id="adPopup">
+        <div class="popup-container">
+            <div class="popup-title">Nhấn vào quảng cáo<br>bất kỳ để đóng cửa sổ này !!</div>
+            <div class="ads-container" id="adsContainer">
+                <!-- Ads will be inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Gallery elements
+        const gallery = document.getElementById('gallery');
+        const loadMoreText = document.getElementById('loadMoreText');
+        const loadingSpinner = document.getElementById('loadingSpinner');
+        const backToTopBtn = document.getElementById('backToTop');
+        const adPopup = document.getElementById('adPopup');
+        const adsContainer = document.getElementById('adsContainer');
+        
+        // Define ad codes for easy updating
+        const adCodes = [
+            {
+                key: '232b712b4f3926add741ef3dacfa845b',
+                format: 'iframe',
+                height: 250,
+                width: 300,
+                params: {}
+            },
+            {
+                key: '0e30a5fb7feed2a39cc356e389549986',
+                format: 'iframe',
+                height: 250,
+                width: 300,
+                params: {}
+            },
+            {
+                key: '7c7b5884fcb9c78838bb6fbb2e72739f',
+                format: 'iframe',
+                height: 250,
+                width: 300,
+                params: {}
+            }
+        ];
+        
+        // Fake ad content for testing
+        const fakeAdContent = [
+            {
+                title: "Special Offer!",
+                text: "Get 50% off on premium cosplay photos",
+                buttonText: "Click Here",
+                colorClass: "color-1"
+            },
+            {
+                title: "Exclusive Content",
+                text: "Access our VIP cosplay collection today",
+                buttonText: "View Now",
+                colorClass: "color-2"
+            },
+            {
+                title: "Limited Time",
+                text: "Early access to upcoming cosplay shoots",
+                buttonText: "Join Now",
+                colorClass: "color-3"
+            }
+        ];
+        
+        // Initial load and lazy loading variables
+        const initialLoad = 25;
+        const loadMoreCount = 45;
+        let currentlyLoaded = 0;
+        let allImages = [];
+        let isLoading = false;
+        let loadMoreCounter = 0; // Counter for tracking load more operations
+        
+        // Function to check if an image exists
+        function imageExists(url) {
+            return new Promise((resolve) => {
+                const img = new Image();
+                img.onload = () => resolve(true);
+                img.onerror = () => resolve(false);
+                img.src = url;
+            });
+        }
+        
+        // Function to fetch all images from the directory
+        async function fetchImageList() {
+            loadingSpinner.style.display = 'block';
+            
+            try {
+                const directoryPath = '../assets/images/cosplay/';
+                const images = [];
+                const totalToCheck = 350; // Total Check Images
+                
+                console.log("Checking for existing images...");
+                
+                // Check each potential image file
+                for (let i = 1; i <= totalToCheck; i++) {
+                    const imgPath = `${directoryPath}cosplay-${i}.jpg`;
+                    images.push({
+                        id: i,
+                        src: imgPath,
+                        alt: `Cosplay Image ${i}`
+                    });
+                }
+                
+                console.log(`Found ${images.length} total possible images`);
+                return images;
+                
+            } catch (error) {
+                console.error('Error fetching images:', error);
+                return [];
+            } finally {
+                loadingSpinner.style.display = 'none';
+            }
+        }
+        
+        // Function to shuffle array
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+        
+        // Function to load images
+        function loadImages(count) {
+            if (isLoading) return;
+            isLoading = true;
+            loadingSpinner.style.display = 'block';
+            
+            const fragment = document.createDocumentFragment();
+            const endIndex = Math.min(currentlyLoaded + count, allImages.length);
+            
+            for (let i = currentlyLoaded; i < endIndex; i++) {
+                const image = allImages[i];
+                const item = document.createElement('div');
+                item.className = 'masonry-item';
+                item.style.animationDelay = `${(i - currentlyLoaded) * 0.05}s`;
+                
+                const img = document.createElement('img');
+                img.src = image.src;
+                img.alt = image.alt;
+                img.loading = 'lazy'; // Use browser's native lazy loading
+                
+                // Add error handling for images
+                img.onerror = function() {
+                    console.log(`Image failed to load: ${img.src}`);
+                    item.remove(); // Remove the item if image fails to load
+                };
+                
+                item.appendChild(img);
+                fragment.appendChild(item);
+            }
+            
+            gallery.appendChild(fragment);
+            currentlyLoaded = endIndex;
+            
+            // Show "No more images" text if all images are loaded
+            if (currentlyLoaded >= allImages.length) {
+                loadMoreText.style.display = 'block';
+            }
+            
+            // Check if any images were displayed
+            if (gallery.children.length === 0 && currentlyLoaded >= allImages.length) {
+                loadMoreText.textContent = 'Không tìm thấy hình ảnh';
+            }
+            
+            // Increment load more counter
+            loadMoreCounter++;
+            
+            // Show ads at specific load more counts
+            if (loadMoreCounter === 3 || loadMoreCounter === 5 || loadMoreCounter === 9) {
+                showAdPopup();
+            }
+            
+            loadingSpinner.style.display = 'none';
+            isLoading = false;
+        }
+        
+        // Function to create a fake ad element
+        function createFakeAd(adData) {
+            const fakeAd = document.createElement('div');
+            fakeAd.className = `fake-ad ${adData.colorClass}`;
+            
+            const title = document.createElement('h3');
+            title.textContent = adData.title;
+            
+            const text = document.createElement('p');
+            text.textContent = adData.text;
+            
+            const button = document.createElement('button');
+            button.textContent = adData.buttonText;
+            
+            fakeAd.appendChild(title);
+            fakeAd.appendChild(text);
+            fakeAd.appendChild(button);
+            
+            // Add click event to close popup
+            fakeAd.addEventListener('click', closePopupAfterAdClick);
+            
+            return fakeAd;
+        }
+        
+        // Function to try loading a real ad
+        function tryLoadRealAd(adCode, container) {
+            try {
+                // Set up window.atOptions
+                window.atOptions = {
+                    'key': adCode.key,
+                    'format': adCode.format,
+                    'height': adCode.height,
+                    'width': adCode.width,
+                    'params': adCode.params
+                };
+                
+                // Create and append the script
+                const script = document.createElement('script');
+                script.type = 'text/javascript';
+                script.src = `//snailthreatenedinvited.com/${adCode.key}/invoke.js`;
+                
+                // Add load/error handlers
+                let adLoaded = false;
+                
+                script.onload = function() {
+                    // Mark that the script loaded (not necessarily the ad)
+                    setTimeout(() => {
+                        // If no iframe appeared after a short delay, show fallback
+                        if (!container.querySelector('iframe')) {
+                            showFallbackAd(container);
+                        }
+                    }, 1000);
+                };
+                
+                script.onerror = function() {
+                    showFallbackAd(container);
+                };
+                
+                // Append the script to body (as required by most ad networks)
+                document.body.appendChild(script);
+                
+            } catch (e) {
+                console.error('Error loading ad script:', e);
+                showFallbackAd(container);
+            }
+        }
+        
+        // Function to show fallback ad
+        function showFallbackAd(container) {
+            // Get a random fake ad
+            const randomAdIndex = Math.floor(Math.random() * fakeAdContent.length);
+            const fakeAd = createFakeAd(fakeAdContent[randomAdIndex]);
+            
+            // Clear container and add the fake ad
+            container.innerHTML = '';
+            container.appendChild(fakeAd);
+        }
+        
+        // Function to prepare and display ads in the popup
+        function prepareAdPopup() {
+            // Clear previous ads
+            adsContainer.innerHTML = '';
+            
+            // Determine how many ads to show based on screen size
+            const isMobile = window.innerWidth <= 830;
+            const numAds = isMobile ? 1 : 2;
+            
+            // Shuffle the ad codes
+            const shuffledAdCodes = shuffleArray([...adCodes]);
+            const shuffledFakeAds = shuffleArray([...fakeAdContent]);
+            
+            // Create containers for each ad
+            for (let i = 0; i < numAds; i++) {
+                const adContainer = document.createElement('div');
+                adContainer.className = 'ad-container';
+                adsContainer.appendChild(adContainer);
+                
+                // For mobile, randomly decide whether to show real or fake ad
+                if (isMobile && Math.random() < 0.5) {
+                    // Show fake ad
+                    const fakeAdIdx = i % shuffledFakeAds.length;
+                    adContainer.appendChild(createFakeAd(shuffledFakeAds[fakeAdIdx]));
+                } else {
+                    // Try to load real ad
+                    const adCodeIdx = i % shuffledAdCodes.length;
+                    tryLoadRealAd(shuffledAdCodes[adCodeIdx], adContainer);
+                    
+                    // Add fallback in case real ad fails
+                    setTimeout(() => {
+                        if (adContainer.children.length === 0) {
+                            showFallbackAd(adContainer);
+                        }
+                    }, 2000);
+                }
+            }
+        }
+        
+        // Function to show ad popup
+        function showAdPopup() {
+            prepareAdPopup();
+            
+            adPopup.style.display = 'flex';
+            setTimeout(() => {
+                adPopup.classList.add('show');
+            }, 10);
+        }
+        
+        // Function to close popup after ad click
+        function closePopupAfterAdClick() {
+            adPopup.classList.remove('show');
+            setTimeout(() => {
+                adPopup.style.display = 'none';
+            }, 500);
+        }
+        
+        // Initialize the gallery
+        async function initGallery() {
+            // Fetch all images
+            const images = await fetchImageList();
+            
+            if (images.length === 0) {
+                loadMoreText.textContent = 'Không tìm thấy hình ảnh';
+                loadMoreText.style.display = 'block';
+                return;
+            }
+            
+            // Shuffle and store the images
+            allImages = shuffleArray([...images]);
+            
+            // Load initial batch
+            loadImages(initialLoad);
+            
+            // Show popup after 4 seconds
+            setTimeout(showAdPopup, 4000);
+        }
+        
+        // Call the init function
+        initGallery();
+        
+        // Add event listeners for ad containers
+        document.addEventListener('click', function(e) {
+            // Check if the click is on an iframe within an ad container
+            if (e.target.tagName === 'IFRAME' && e.target.closest('.ad-container')) {
+                closePopupAfterAdClick();
+                return false;
+            }
+        }, true);  // Use capture phase to detect clicks inside iframes
+        
+        // Detect all ad container clicks to close popup
+        document.querySelectorAll('.ad-container').forEach(container => {
+            container.addEventListener('click', closePopupAfterAdClick, true);
+        });
+        
+        // Lazy load on scroll
+        window.addEventListener('scroll', () => {
+            const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
+            
+            // Check if we're near the bottom of the page
+            if (scrollTop + clientHeight >= scrollHeight - 200) {
+                // If there are more images to load
+                if (currentlyLoaded < allImages.length && !isLoading) {
+                    loadImages(loadMoreCount);
+                }
+            }
+            
+            // Show or hide back to top button
+            if (scrollTop > 500) {
+                backToTopBtn.classList.add('visible');
+            } else {
+                backToTopBtn.classList.remove('visible');
+            }
+        });
+        
+        // Touch events for mobile scroll
+        let touchStartY = 0;
+        let touchEndY = 0;
+        
+        document.addEventListener('touchstart', (e) => {
+            touchStartY = e.changedTouches[0].screenY;
+        }, false);
+        
+        document.addEventListener('touchend', (e) => {
+            touchEndY = e.changedTouches[0].screenY;
+            handleSwipe();
+        }, false);
+        
+        function handleSwipe() {
+            const diff = touchStartY - touchEndY;
+            // If swiped up significantly and near bottom
+            if (diff > 100) {
+                const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
+                if (scrollTop + clientHeight >= scrollHeight - 300) {
+                    // If there are more images to load
+                    if (currentlyLoaded < allImages.length && !isLoading) {
+                        loadImages(loadMoreCount);
+                    }
+                }
+            }
+        }
+        
+        // Back to top functionality
+        backToTopBtn.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+        
+        // Intersection Observer for more efficient lazy loading
+        if ('IntersectionObserver' in window) {
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px 0px 200px 0px',
+                threshold: 0.1
+            };
+            
+            const handleIntersect = (entries, observer) => {
+                if (entries.some(entry => entry.isIntersecting)) {
+                    if (currentlyLoaded < allImages.length && !isLoading) {
+                        loadImages(loadMoreCount);
+                    }
+                }
+            };
+            
+            const observer = new IntersectionObserver(handleIntersect, observerOptions);
+            
+            // Observe the loadMoreText element as a trigger point
+            observer.observe(document.getElementById('loadMoreText'));
+        }
+
+        // Make sure clicks on any part of an ad container close the popup
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add event listeners dynamically after DOM is loaded
+            document.querySelectorAll('.ad-container').forEach(container => {
+                container.addEventListener('click', closePopupAfterAdClick, true);
+            });
+        });
+    </script>
+</body>
+</html>

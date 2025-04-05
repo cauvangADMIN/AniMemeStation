@@ -1,0 +1,1259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AniMemeStation - Meme</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        
+		body {
+			background-color: #432456;
+			background-image: linear-gradient(135deg, #432456 0%, #5a3069 100%);
+			color: #fff;
+			overflow-x: hidden;
+			display: flex;
+			justify-content: center;
+			align-items: flex-start;
+			min-height: 100vh;
+			padding: 20px;
+			padding-top: calc(10vh);
+		}
+        
+        .container {
+            width: 1500px;
+            height: 781px;
+            max-width: 100%;
+            max-height: 100vh;
+            background-color: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        nav {
+            padding: 25px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-start;
+        }
+        
+        nav a {
+            margin-right: 38px;
+            margin-bottom: 12px;
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+            position: relative;
+            font-size: 20px;
+        }
+        
+        nav a[href="meme.html"] {
+            text-decoration: underline;
+            text-underline-offset: 6px;
+        }
+        
+        #content-container {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+        }
+        
+        .content-area {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            padding: 0 25px 25px;
+        }
+        
+        .left-content {
+            flex: 1;
+            padding-right: 25px;
+            position: relative;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateX(-30px);
+            animation: slideInRight 0.8s ease-out forwards;
+        }
+        
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+ 
+        .english-title {
+            font-size: 35px;
+            color: #333;
+            font-weight: bold;
+            letter-spacing: 0px;
+            margin-bottom: 15px;
+            text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.1);
+            opacity: 0;
+            animation: fadeIn 0.6s ease-out 0.4s forwards;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        /* Slider Styles */
+        .meme-slider {
+            width: 100%;
+            height: 80%;
+            position: relative;
+            overflow: hidden;
+            background-color: #f8f8f8;
+            border-radius: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transform: scale(0.95);
+            opacity: 0;
+            animation: zoomIn 0.7s ease-out 0.6s forwards;
+        }
+        
+        @keyframes zoomIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        
+        .meme-slide {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: transform 0.5s ease-out;
+            background-color: white;
+            border-radius: 20px;
+            padding: 15px;
+            overflow: hidden;
+        }
+        
+        .meme-slide img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            border-radius: 10px;
+        }
+        
+        .meme-slide.active {
+            transform: translateY(0) scale(1);
+            z-index: 2;
+        }
+        
+        .meme-slide.prev {
+            transform: translateY(-110%) scale(0.8);
+            z-index: 1;
+        }
+        
+        .meme-slide.next {
+            transform: translateY(110%) scale(0.8);
+            z-index: 1;
+        }
+        
+        .slide-controls {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            padding: 15px 0;
+            opacity: 0;
+            animation: fadeIn 0.5s ease-out 0.8s forwards;
+        }
+        
+        .control-btn {
+            display: inline-block;
+            background-color: #73264d;
+            color: white;
+            padding: 12px 30px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 30px;
+            text-decoration: none;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+            margin-top: 5px;
+        }
+        
+        .control-btn:hover {
+            background-color: #5a1d3d;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+        
+        .control-btn:active {
+            transform: translateY(1px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        
+        .slide-counter {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: #333;
+            font-weight: bold;
+        }
+        
+        /* Right Content Styles */
+        .right-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            opacity: 0;
+            transform: translateX(30px);
+            animation: slideInLeft 0.8s ease-out forwards;
+        }
+        
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        .qr-title {
+            font-size: 33px;
+            color: #73264d;
+            font-weight: bold;
+            margin-bottom: 25px;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(15px);
+            animation: fadeInUp 0.6s ease-out 0.4s forwards;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .qr-container {
+            width: 300px;
+            height: 300px;
+            background-color: white;
+            border: 4px solid #73264d;
+            border-radius: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            position: relative;
+            opacity: 0;
+            transform: scale(0.9);
+            animation: scaleIn 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.6s forwards;
+        }
+        
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        
+        .qr-code {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+        }
+        
+        .qr-caption {
+            margin-top: 15px;
+            font-size: 18px;
+            color: #333;
+            text-align: center;
+            line-height: 1.6;
+            opacity: 0;
+            animation: fadeIn 0.6s ease-out 0.8s forwards;
+        }
+        
+        .accent-dot {
+            position: absolute;
+            width: 38px;
+            height: 38px;
+            background-color: #73264d;
+            border-radius: 50%;
+            z-index: 3;
+        }
+        
+        .dot-1 {
+            top: 10%;
+            right: 10%;
+        }
+        
+        .dot-2 {
+            bottom: 10%;
+            left: 10%;
+        }
+
+        .loading-spinner {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            width: 100%;
+        }
+        
+        .spinner {
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #73264d;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Animation for slide appearance */
+        .meme-slide.active img {
+            animation: fadeScale 0.5s ease-out;
+        }
+        
+        @keyframes fadeScale {
+            from {
+                opacity: 0.7;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        
+        /* Button row styles */
+        .button-row {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+            width: 100%;
+            opacity: 0;
+            animation: fadeIn 0.6s ease-out 1s forwards;
+        }
+        
+        .action-btn {
+            padding: 10px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 30px;
+            border: none;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+            white-space: nowrap;
+        }
+        
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+        
+        .action-btn:active {
+            transform: translateY(1px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+        }
+        
+        .ai-btn {
+            background-color: #3498db;
+        }
+        
+        .ai-btn:hover {
+            background-color: #2980b9;
+        }
+        
+        /* Future message styles */
+        .future-msg {
+            margin-top: 15px;
+            font-size: 14px;
+            color: #e74c3c;
+            text-align: center;
+            line-height: 1.4;
+            max-width: 400px;
+            opacity: 0;
+            animation: fadeIn 0.6s ease-out 1.2s forwards;
+        }
+        
+        /* Ad Popup Styles */
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        .popup-container {
+            background-color: white;
+            border-radius: 15px;
+            padding: 25px;
+            width: 90%;
+            max-width: 650px; /* Increased for 2 ads side by side */
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transform: scale(0.9);
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .popup-title {
+            font-size: 23px;
+            color: #333;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .ads-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 15px;
+        }
+
+        .ad-container {
+            width: 300px;
+            height: 250px;
+            background-color: #f0f0f0;
+            border: 1px solid #ddd;
+            overflow: hidden;
+        }
+
+        /* Fake ad for testing */
+        .fake-ad {
+            width: 300px;
+            height: 250px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            text-align: center;
+            padding: 15px;
+            box-sizing: border-box;
+        }
+
+        .fake-ad-1 {
+            background: linear-gradient(135deg, #ff9966 0%, #ff5e62 100%);
+            color: white;
+        }
+
+        .fake-ad-2 {
+            background: linear-gradient(135deg, #56CCF2 0%, #2F80ED 100%);
+            color: white;
+        }
+
+        .fake-ad h3 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .fake-ad p {
+            font-size: 16px;
+            margin-bottom: 15px;
+        }
+
+        .fake-ad button {
+            background-color: white;
+            border: none;
+            color: #333;
+            padding: 8px 18px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .fake-ad-1 button {
+            color: #ff5e62;
+        }
+
+        .fake-ad-2 button {
+            color: #2F80ED;
+        }
+
+        .fake-ad button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Show animation for popup */
+        .popup-overlay.show {
+            opacity: 1;
+            display: flex;
+        }
+
+        .popup-overlay.show .popup-container {
+            transform: scale(1);
+        }
+        
+        /* Responsive styles */
+        @media screen and (max-width: 1500px) {
+            .container {
+                width: 100%;
+                height: auto;
+                aspect-ratio: 1500/781;
+            }
+        }
+        
+        @media screen and (max-width: 830px) {
+			body {
+				padding-top: 5vh;
+				min-height: 100vh;
+				height: auto;
+				position: relative;
+			}
+            
+			.container {
+				aspect-ratio: auto;
+				height: auto;
+				min-height: 700px;
+				max-height: none;
+			}
+            
+            nav {
+                justify-content: center;
+            }
+            
+			#content-container {
+				flex: 1;
+				min-height: 600px;
+				height: auto;
+				overflow-y: visible;
+			}
+			
+			.content-area {
+				flex-direction: column;
+				padding: 0 15px 20px;
+				height: auto;
+				overflow: visible;
+			}
+            
+            .left-content {
+                padding-right: 0;
+                margin-bottom: 20px;
+                text-align: center;
+                flex: none;
+            }
+
+            .english-title {
+                font-size: 35px;
+            }
+            
+            .meme-slider {
+                height: 430px;
+                margin-bottom: 20px;
+            }
+            
+            .control-btn {
+                padding: 10px 25px;
+                font-size: 16px;
+            }
+            
+			.right-content {
+				flex: none;
+				height: auto;
+				padding: 20px 0;
+				overflow: visible;
+			}
+            
+            .qr-title {
+                font-size: 26px;
+                margin-bottom: 15px;
+            }
+            
+            .qr-container {
+                width: 200px;
+                height: 200px;
+            }
+            
+            .qr-caption {
+                font-size: 16px;
+            }
+            
+            #content-container {
+                flex: 1;
+                min-height: 600px;
+            }
+            
+            /* Adjust button row for mobile */
+            .button-row {
+                flex-wrap: nowrap;
+                gap: 10px;
+            }
+            
+            .action-btn {
+                padding: 8px 15px;
+                font-size: 14px;
+            }
+            
+            /* Adjust popup for mobile */
+            .popup-container {
+                padding: 15px;
+                max-width: 340px;
+            }
+            
+            .ads-container {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .future-msg {
+                font-size: 12px;
+                max-width: 300px;
+            }
+        }
+        
+        @media screen and (max-width: 480px) {
+			.container {
+				border-radius: 15px;
+				min-height: 650px;
+				height: auto;
+				overflow: visible;
+			}
+            
+            nav a {
+                margin-right: 15px;
+                font-size: 14px;
+            }     
+            
+            .english-title {
+                font-size: 25px;
+                margin-bottom: 10px;
+            }
+            
+            .meme-slider {
+                height: 390px;
+            }
+            
+            .control-btn {
+                padding: 8px 20px;
+                font-size: 14px;
+            }
+            
+            .slide-counter {
+                font-size: 14px;
+            }
+            
+            .qr-title {
+                font-size: 22px;
+            }
+            
+            .qr-container {
+                width: 180px;
+                height: 180px;
+            }
+            
+            .qr-caption {
+                font-size: 12px;
+            }
+            
+			#content-container {
+				min-height: 550px;
+				height: auto;
+				overflow: visible;
+			}
+            
+            /* Further adjust button row for smaller screens */
+            .action-btn {
+                padding: 8px 10px;
+                font-size: 12px;
+            }
+            
+            .popup-title {
+                font-size: 21px;
+                margin-bottom: 15px;
+                margin-top: 15px;
+                padding-left: 10px;
+                padding-right: 10px;
+            }
+
+            .future-msg {
+                font-size: 11px;
+                max-width: 250px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav>
+            <a href="../pages/../donate.html">Donate</a>
+            <a href="meme.html">Meme</a>
+        </nav>
+        
+        <div id="content-container">
+            <div class="content-area">
+                <div class="left-content">
+                    <div class="english-title">Meme luôn cập nhật liên tục</div>
+                    <div class="meme-slider">
+                        <div class="loading-spinner">
+                            <div class="spinner"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="slide-controls">
+                        <button class="control-btn prev-btn">Quay Lại</button>
+                        <div class="slide-counter">0 / 0</div>
+                        <button class="control-btn next-btn">Tiếp Theo</button>
+                    </div>
+                </div>
+                
+                <div class="right-content">
+                    <h2 class="qr-title">Donate Me Please</h2>
+                    <div class="qr-container">
+                        <img src="../assets/images/QR_Code.png" alt="QR Code" class="qr-code">
+                    </div>
+                    <p class="qr-caption">Hãy Giúp Tôi Có Thêm Động Lực Để Sản Xuất Meme</p>
+                    <p class="qr-caption">Hãy Giúp Tôi Có Chi Phí Để Lưu Trữ Hình Ảnh, Duy Trì Server</p>
+                    
+                    <!-- Button row -->
+                    <div class="button-row">
+                        <button class="action-btn ai-btn">Xem Cosplay</button>
+                    </div>
+                    <p class="future-msg">Tương lai sẽ còn nhiều thứ hay ho khác, tôi cần thời gian và tài chính để code thêm chức năng cho trang web</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ad Popup -->
+    <div class="popup-overlay" id="adPopup">
+        <div class="popup-container">
+            <div class="popup-title">Nhấn vào quảng cáo<br>bất kỳ để đóng cửa sổ này !!</div>
+            <div class="ads-container" id="adsContainer">
+                <!-- Ads will be inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const sliderContainer = document.querySelector('.meme-slider');
+            const prevBtn = document.querySelector('.prev-btn');
+            const nextBtn = document.querySelector('.next-btn');
+            const slideCounter = document.querySelector('.slide-counter');
+            const aiButton = document.querySelector('.ai-btn');
+            const adPopup = document.getElementById('adPopup');
+            const adsContainer = document.getElementById('adsContainer');
+            
+            let currentSlide = 0;
+            let allMemeImages = []; // All images paths
+            let loadedMemeImages = []; // Currently loaded images
+            let totalImageCount = 0; // Total count of all available images
+            const batchSize = 10; // Number of images to load per batch
+            let isLoading = false; // Flag to prevent multiple loads
+            
+            // Ad configuration
+            const adConfigs = [
+                {
+                    key: '232b712b4f3926add741ef3dacfa845b',
+                    format: 'iframe',
+                    height: 250,
+                    width: 300,
+                    params: {}
+                },
+                {
+                    key: '0e30a5fb7feed2a39cc356e389549986',
+                    format: 'iframe',
+                    height: 250,
+                    width: 300,
+                    params: {}
+                },
+                {
+                    key: '7c7b5884fcb9c78838bb6fbb2e72739f',
+                    format: 'iframe',
+                    height: 250,
+                    width: 300,
+                    params: {}
+                }
+            ];
+            
+            // Fake ads for testing
+            const fakeAds = [
+                {
+                    title: 'Special Offer!',
+                    description: 'Get 50% off on premium memes today',
+                    buttonText: 'Click Here',
+                    class: 'fake-ad-1'
+                },
+                {
+                    title: 'New Collection!',
+                    description: 'Explore our exclusive meme templates',
+                    buttonText: 'See Now',
+                    class: 'fake-ad-2'
+                },
+                {
+                    title: 'Join Premium',
+                    description: 'Access unlimited HD memes & templates',
+                    buttonText: 'Join Now',
+                    class: 'fake-ad-1'
+                }
+            ];
+            
+            // Add event listener for cosplay button
+            aiButton.addEventListener('click', function() {
+                window.location.href = '../pages/ai-selection-screen.html';
+            });
+            
+            // Function to check if device is mobile
+            function isMobileDevice() {
+                return window.innerWidth <= 830;
+            }
+            
+            // Function to show ad popup with appropriate number of ads
+            function showAdPopup() {
+                // Clear previous ads
+                adsContainer.innerHTML = '';
+                
+                // Determine how many ads to show based on device
+                const adsToShow = isMobileDevice() ? 1 : 2;
+                
+                // Randomly select which ads to use
+                const shuffledFakeAds = [...fakeAds].sort(() => 0.5 - Math.random());
+                
+                for (let i = 0; i < adsToShow; i++) {
+                    const adContainer = document.createElement('div');
+                    adContainer.className = 'ad-container';
+                    
+                    // Create fake ad for testing
+                    const fakeAd = document.createElement('div');
+                    fakeAd.className = `fake-ad ${shuffledFakeAds[i].class}`;
+                    
+                    fakeAd.innerHTML = `
+                        <h3>${shuffledFakeAds[i].title}</h3>
+                        <p>${shuffledFakeAds[i].description}</p>
+                        <button>${shuffledFakeAds[i].buttonText}</button>
+                    `;
+                    
+                    // Add click event to close popup
+                    fakeAd.addEventListener('click', closePopupAfterAdClick);
+                    
+                    adContainer.appendChild(fakeAd);
+                    adsContainer.appendChild(adContainer);
+                    
+                    // In a real implementation, you would try to load the real ad here
+                    // Example code for real implementation (commented out for now):
+                    /*
+                    try {
+                        // Ad options
+                        window.atOptions = adConfigs[i]; 
+                        
+                        // Create and append the script
+                        const script = document.createElement('script');
+                        script.type = 'text/javascript';
+                        script.src = `//snailthreatenedinvited.com/${adConfigs[i].key}/invoke.js`;
+                        
+                        // When ad script loads successfully, hide the fake ad
+                        script.onload = function() {
+                            fakeAd.style.display = 'none';
+                        };
+                        
+                        // If ad script fails, show the fake ad
+                        script.onerror = function() {
+                            fakeAd.style.display = 'flex';
+                        };
+                        
+                        document.body.appendChild(script);
+                    } catch (e) {
+                        console.error('Error loading ad script:', e);
+                        // Ensure fake ad is visible if there's an error
+                        fakeAd.style.display = 'flex';
+                    }
+                    */
+                }
+                
+                // Show popup
+                adPopup.style.display = 'flex';
+                setTimeout(() => {
+                    adPopup.classList.add('show');
+                }, 10);
+            }
+            
+            // Track how many times the popup has been closed
+            let popupCloseCount = 0;
+            
+            // Function to close popup after ad click
+            function closePopupAfterAdClick() {
+                adPopup.classList.remove('show');
+                setTimeout(() => {
+                    adPopup.style.display = 'none';
+                    
+                    // Increment the close count
+                    popupCloseCount++;
+                    
+                    // Show popup again after 3 minutes if it's the first or second close
+                    if (popupCloseCount <= 2) {
+                        setTimeout(() => {
+                            showAdPopup();
+                        }, 2 * 60 * 1000); // 3 minutes in milliseconds
+                    }
+                }, 500);
+            }
+            
+            // Detect actual ad iframe clicks
+            document.addEventListener('click', function(e) {
+                // Check if the click is on an iframe within the ad container
+                if (e.target.tagName === 'IFRAME' && e.target.closest('#adsContainer')) {
+                    // Close the popup
+                    closePopupAfterAdClick();
+                    return false;
+                }
+            }, true);  // Use capture phase to detect clicks inside iframes
+            
+            // Function to fetch all available image paths
+            async function fetchAllImagePaths() {
+                try {
+                    // Show loading spinner
+                    sliderContainer.innerHTML = `
+                        <div class="loading-spinner">
+                            <div class="spinner"></div>
+                        </div>
+                    `;
+                    
+                    // In a real environment, this would be replaced with an API call
+                    // to fetch the list of images from the server
+                    // For this example, we'll simulate a server response
+                    
+                    // Simulate network delay
+                    await new Promise(resolve => setTimeout(resolve, 800));
+                    
+                    // The following code simulates a server response
+                    // In a real implementation, this would be replaced with a fetch call
+                    // to an API endpoint that returns the list of image paths
+                    
+                    // Simulated response - in real implementation, replace with actual API call
+                    const memeFolder = '../assets/images/meme/';
+                    const simulatedPaths = [];
+                    
+                    // Create a list of potential images to check
+                    // No limit - checking all possible images (in a real environment this would come from the server)
+                    for (let i = 1; i <= 150; i++) { // Simulating 100 images
+                        simulatedPaths.push(`${memeFolder}meme${i}.jpg`);
+                    }
+                    
+                    // Check for other potential naming patterns
+                    // Example: images named with dates
+                    const today = new Date();
+                    for (let i = 0; i < 30; i++) { // Looking back 30 days
+                        const date = new Date();
+                        date.setDate(today.getDate() - i);
+                        const dateStr = date.toISOString().split('T')[0]; // YYYY-MM-DD format
+                        simulatedPaths.push(`${memeFolder}meme_${dateStr}.jpg`);
+                    }
+                    
+                    // Create an array of promises to check all images
+                    // Note: In a real server environment, you wouldn't do this client-side.
+                    // Instead, the server would return the complete list of available image paths.
+                    const imagePromises = simulatedPaths.map(src => {
+                        return new Promise(resolve => {
+                            const img = new Image();
+                            img.onload = () => resolve({ src, exists: true });
+                            img.onerror = () => resolve({ src, exists: false });
+                            img.src = src;
+                        });
+                    });
+                    
+                    // Wait for all images to be checked
+                    const results = await Promise.all(imagePromises);
+                    
+                    // Filter out the images that exist
+                    const existingImages = results
+                        .filter(result => result.exists)
+                        .map(result => result.src);
+                    
+                    if (existingImages.length > 0) {
+                        // Sort images to get newest first
+                        allMemeImages = sortImagesByNewestFirst(existingImages);
+                        totalImageCount = allMemeImages.length;
+                        
+                        // Load first batch of images
+                        await loadImageBatch(0);
+                    } else {
+                        // No images found
+                        handleNoImagesFound();
+                    }
+                    
+                } catch (error) {
+                    console.error('Error fetching meme images:', error);
+                    handleFetchError();
+                }
+            }
+            
+            // Function to load a batch of images starting from the given index
+            async function loadImageBatch(startIndex) {
+                if (isLoading) return;
+                isLoading = true;
+                
+                try {
+                    // Show loading spinner if first batch
+                    if (loadedMemeImages.length === 0) {
+                        sliderContainer.innerHTML = `
+                            <div class="loading-spinner">
+                                <div class="spinner"></div>
+                            </div>
+                        `;
+                    }
+                    
+                    // Calculate end index for current batch
+                    const endIndex = Math.min(startIndex + batchSize, allMemeImages.length);
+                    
+                    // If we've already loaded all images, don't do anything
+                    if (startIndex >= allMemeImages.length) {
+                        isLoading = false;
+                        return;
+                    }
+                    
+                    // Simulate loading delay
+                    if (loadedMemeImages.length > 0) {
+                        await new Promise(resolve => setTimeout(resolve, 300));
+                    }
+                    
+                    // Get image paths for this batch
+                    const batchPaths = allMemeImages.slice(startIndex, endIndex);
+                    
+                    // Add new batch to loaded images
+                    loadedMemeImages = [...loadedMemeImages, ...batchPaths];
+                    
+                    // Create or update slides
+                    createSlides();
+                    
+                    isLoading = false;
+                } catch (error) {
+                    console.error('Error loading image batch:', error);
+                    isLoading = false;
+                }
+            }
+            
+            // Function to sort images by newest first
+            function sortImagesByNewestFirst(images) {
+                // This function sorts images by their naming pattern
+                // Assuming higher numbers in filenames = newer images
+                return images.sort((a, b) => {
+                    // Try to extract a number from the filename
+                    const getImageNumber = (path) => {
+                        // Extract filename from path
+                        const filename = path.split('/').pop();
+                        
+                        // First check if it has a date format (YYYY-MM-DD)
+                        const dateMatch = filename.match(/(\d{4}-\d{2}-\d{2})/);
+                        if (dateMatch) {
+                            // Higher timestamp = newer image
+                            return new Date(dateMatch[1]).getTime();
+                        }
+                        
+                        // Look for numbers in the filename
+                        const numMatch = filename.match(/\d+/);
+                        if (numMatch) {
+                            return parseInt(numMatch[0]);
+                        }
+                        
+                        // If no number found, use alphabetical order
+                        return 0;
+                    };
+                    
+                    // Sort in descending order (newest first)
+                    return getImageNumber(b) - getImageNumber(a);
+                });
+            }
+            
+            // Create slides for currently loaded images
+            function createSlides() {
+                sliderContainer.innerHTML = '';
+                
+                if (loadedMemeImages.length === 0) {
+                    handleNoImagesFound();
+                    return;
+                }
+                
+                loadedMemeImages.forEach((image, index) => {
+                    const slide = document.createElement('div');
+                    slide.className = 'meme-slide';
+                    
+                    // Set initial position classes
+                    if (index === currentSlide) {
+                        slide.classList.add('active');
+                    } else if (index < currentSlide) {
+                        slide.classList.add('prev');
+                    } else {
+                        slide.classList.add('next');
+                    }
+                    
+                    const img = document.createElement('img');
+                    img.src = image;
+                    img.alt = `Meme ${index + 1}`;
+                    
+                    slide.appendChild(img);
+                    sliderContainer.appendChild(slide);
+                });
+                
+                updateCounter();
+            }
+            
+            // Handle no images found
+            function handleNoImagesFound() {
+                sliderContainer.innerHTML = `
+                    <div style="display: flex; justify-content: center; align-items: center; height: 100%; padding: 20px; text-align: center;">
+                        <p style="color: #666;">Không tìm thấy hình ảnh meme nào. Vui lòng thử lại sau.</p>
+                    </div>
+                `;
+                slideCounter.textContent = "0 / 0";
+            }
+            
+            // Handle fetch error
+            function handleFetchError() {
+                sliderContainer.innerHTML = `
+                    <div style="display: flex; justify-content: center; align-items: center; height: 100%; padding: 20px; text-align: center;">
+                        <p style="color: #666;">Đã xảy ra lỗi khi tải hình ảnh. Vui lòng thử lại sau.</p>
+                    </div>
+                `;
+                slideCounter.textContent = "0 / 0";
+            }
+            
+            // Update slide counter
+            function updateCounter() {
+                if (loadedMemeImages.length === 0) {
+                    slideCounter.textContent = "0 / 0";
+                } else {
+                    slideCounter.textContent = `${currentSlide + 1} / ${totalImageCount}`;
+                }
+            }
+            
+            // Go to next slide
+            function nextSlide() {
+                if (loadedMemeImages.length === 0) return;
+                
+                // Check if we need to load more images
+                if (currentSlide === loadedMemeImages.length - 3 && loadedMemeImages.length < allMemeImages.length) {
+                    loadImageBatch(loadedMemeImages.length);
+                }
+                
+                if (currentSlide < loadedMemeImages.length - 1) {
+                    currentSlide++;
+                    updateSlides();
+                }
+            }
+            
+            // Go to previous slide
+            function prevSlide() {
+                if (loadedMemeImages.length === 0) return;
+                
+                if (currentSlide > 0) {
+                    currentSlide--;
+                    updateSlides();
+                }
+            }
+            
+            // Update slide positions
+            function updateSlides() {
+                const slides = document.querySelectorAll('.meme-slide');
+                
+                slides.forEach((slide, index) => {
+                    slide.classList.remove('active', 'prev', 'next');
+                    
+                    if (index === currentSlide) {
+                        slide.classList.add('active');
+                    } else if (index < currentSlide) {
+                        slide.classList.add('prev');
+                    } else {
+                        slide.classList.add('next');
+                    }
+                });
+                
+                updateCounter();
+            }
+            
+            // Add touch swipe functionality
+            let touchStartY = 0;
+            let touchEndY = 0;
+            
+            sliderContainer.addEventListener('touchstart', function(e) {
+                touchStartY = e.changedTouches[0].screenY;
+            });
+            
+            sliderContainer.addEventListener('touchend', function(e) {
+                touchEndY = e.changedTouches[0].screenY;
+                handleSwipe();
+            });
+            
+            function handleSwipe() {
+                const swipeDistance = touchEndY - touchStartY;
+                
+                if (swipeDistance > 50) {
+                    // Swipe down, go to previous slide
+                    prevSlide();
+                } else if (swipeDistance < -50) {
+                    // Swipe up, go to next slide
+                    nextSlide();
+                }
+            }
+            
+            // Button event listeners
+            prevBtn.addEventListener('click', prevSlide);
+            nextBtn.addEventListener('click', nextSlide);
+            
+            // Initialize
+            fetchAllImagePaths();
+            
+            // Show ad popup after 5 seconds
+            setTimeout(showAdPopup, 5000);
+        });
+    </script>
+</body>
+</html>

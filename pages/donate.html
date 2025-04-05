@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AniMemeStation - Donate</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        
+        body {
+            background-color: #432456;
+            background-image: linear-gradient(135deg, #432456 0%, #5a3069 100%);
+            color: #fff;
+            overflow-x: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            padding: 20px;
+            padding-top: calc(10vh);
+        }
+        
+        .container {
+            width: 1500px;
+            height: 781px;
+            max-width: 100%;
+            max-height: 100vh;
+            background-color: white;
+            border-radius: 20px;
+            overflow: auto; /* Changed from hidden to auto to enable scrolling */
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        nav {
+            padding: 25px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-start;
+        }
+        
+        nav a {
+            margin-right: 38px;
+            margin-bottom: 12px;
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+            position: relative;
+            font-size: 20px;
+        }
+        
+        nav a:nth-child(2) {
+            text-decoration: underline;
+            text-underline-offset: 6px;
+        }
+        
+        #content-container {
+            flex: 1;
+            display: flex;
+            overflow: auto; /* Changed from hidden to auto to enable scrolling */
+        }
+        
+        .content-variation {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            padding: 0 25px 25px;
+        }
+        
+        /* Animation styles for left content */
+        .left-content {
+            flex: 1;
+            padding-right: 25px;
+            overflow-y: auto;
+            opacity: 0;
+            transform: translateX(-50px);
+            animation: fadeInLeft 1s ease forwards;
+        }
+        
+        @keyframes fadeInLeft {
+            0% {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        .english-title {
+            font-size: 55px;
+            color: #333;
+            font-weight: bold;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+            text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .about-section p {
+            color: #333;
+            line-height: 1.6;
+            font-size: 19px;
+            margin-bottom: 25px;
+        }
+        
+        .qr-code-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+        }
+        
+        .qr-code-image {
+            max-width: 310px;
+            max-height: 310px;
+        }
+        
+        /* Animation styles for right content */
+        .right-content {
+            flex: 1;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            perspective: 1200px;
+            opacity: 0;
+            transform: translateX(50px);
+            animation: fadeInRight 1s ease forwards;
+            animation-delay: 0.3s;
+        }
+        
+        @keyframes fadeInRight {
+            0% {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        /* 3D Carousel Styles */
+        .carousel-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .carousel {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
+            transition: transform 1s ease;
+        }
+        
+        .carousel-item {
+            position: absolute;
+            width: 220px;
+            height: 490px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+            transition: all 0.7s ease;
+            opacity: 0;
+            z-index: 1;
+        }
+        
+        .carousel-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        /* Specific positions */
+        .carousel-item.active {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+            z-index: 10;
+        }
+        
+        .carousel-item.prev {
+            transform: translate(-150%, -50%) scale(0.8) rotateY(15deg);
+            opacity: 0.7;
+            z-index: 9;
+        }
+        
+        .carousel-item.prev-2 {
+            transform: translate(-220%, -50%) scale(0.6) rotateY(25deg);
+            opacity: 0.4;
+            z-index: 8;
+        }
+        
+        .carousel-item.next {
+            transform: translate(50%, -50%) scale(0.8) rotateY(-15deg);
+            opacity: 0.7;
+            z-index: 9;
+        }
+        
+        .carousel-item.next-2 {
+            transform: translate(120%, -50%) scale(0.6) rotateY(-25deg);
+            opacity: 0.4;
+            z-index: 8;
+        }
+        
+        /* Navigation buttons */
+        .carousel-nav {
+            position: absolute;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 20;
+            padding: 0 20px;
+        }
+        
+        .carousel-nav button {
+            background-color: rgba(115, 38, 77, 0.7);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 18px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: background-color 0.3s;
+            z-index: 100;
+            opacity: 0;
+            animation: fadeIn 1s ease forwards;
+            animation-delay: 0.8s;
+        }
+        
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+        
+        .carousel-nav button:hover {
+            background-color: rgba(115, 38, 77, 1);
+        }
+        
+        /* Responsive styles */
+        @media screen and (max-width: 1500px) {
+            .container {
+                width: 100%;
+                height: auto;
+                aspect-ratio: 1500/781;
+            }
+        }
+        
+        @media screen and (max-width: 830px) {
+            body {
+                padding-top: 5vh;
+                align-items: center;
+                overflow-y: auto; /* Enable vertical scrolling */
+            }
+            
+            .container {
+                aspect-ratio: auto;
+                height: auto;
+                min-height: 700px;
+                overflow-y: auto; /* Enable vertical scrolling */
+            }
+            
+            nav {
+                justify-content: center;
+            }
+            
+            .content-variation {
+                flex-direction: column;
+                padding: 0 15px 20px;
+                overflow-y: auto; /* Enable vertical scrolling */
+            }
+            
+            .left-content {
+                padding-right: 0;
+                margin-bottom: 20px;
+                text-align: center;
+                flex: none;
+            }
+            
+            .english-title {
+                font-size: 50px;
+            }
+            
+            .about-section p {
+                font-size: 16px;
+            }
+            
+            .qr-code-image {
+                max-width: 270px;
+                max-height: 270px;
+            }
+            
+            .right-content {
+                flex: none;
+                height: 400px;
+            }
+            
+            .carousel-item {
+                width: 180px;
+                height: 320px;
+            }
+            
+            #content-container {
+                flex: 1;
+                min-height: 600px;
+                overflow-y: auto; /* Enable vertical scrolling */
+            }
+        }
+        
+        @media screen and (max-width: 480px) {
+            .container {
+                border-radius: 15px;
+                min-height: 650px;
+                overflow-y: auto; /* Enable vertical scrolling */
+            }
+            
+            nav a {
+                margin-right: 15px;
+                font-size: 14px;
+            }
+            
+            .english-title {
+                font-size: 36px;
+                margin-bottom: 20px;
+            }
+            
+            .about-section p {
+                font-size: 14px;
+            }
+            
+            .qr-code-image {
+                max-width: 250px;
+                max-height: 250px;
+            }
+            
+            .right-content {
+                height: 350px;
+            }
+            
+            .carousel-item {
+                width: 150px;
+                height: 340px;
+            }
+            
+            #content-container {
+                min-height: 550px;
+                overflow-y: auto; /* Enable vertical scrolling */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav>
+		    <a href="../AniMemeStation.html">Meme</a>
+            <a href="../pages/donate.html">Donate</a>
+			<a href="../pages/cosplay.html">Cosplay</a>
+        </nav>
+        
+        <div id="content-container">
+            <div class="content-variation" style="display: flex;">
+                <div class="left-content">
+                    <div class="english-title">Đôi lời tâm sự</div>
+                    
+                    <div class="about-section">
+                        <p>
+                            Chào anh em, tình hình là hiện tại dự án web này tôi chỉ có 1 mình thôi. Với mục đích đưa nhiều nội dung giải trí, giải pháp giúp người xem chạm đến các bạn làm 2D, 3D, Artist mới ra nghề, đồng thời mang đến thời gian giải trí cho anh em. Bên cạnh đó, việc lưu trữ hình ảnh liên tục update nội dung sẽ tốn khá nhiều chi phí. Nên anh em có lòng hỗ trợ tôi dù ít hay nhiều đều rất chân thành cảm ơn!
+                        </p>
+                        
+                        <div class="qr-code-container">
+                            <img src="../assets/images/QR_Code.png" alt="QR Code for donation" class="qr-code-image">
+                        </div>
+						
+						<div style="text-align: center; margin-top: 20px;">
+                            <a href="../pages/top-donate.html" style="display: inline-block; background-color: #73264d; color: white; padding: 12px 24px; text-decoration: none; border-radius: 8px; font-weight: bold; box-shadow: 0 4px 8px rgba(0,0,0,0.2); transition: all 0.3s ease;">Xem bảng xếp hạng donate</a>
+                        </div>
+						
+                    </div>
+                </div>
+                
+                <div class="right-content">
+                    <div class="carousel-container">
+                        <div class="carousel">
+                            <div class="carousel-item" data-position="prev-2">
+                                <img src="../assets/images/donate-1.png" alt="Character 1">
+                            </div>
+                            <div class="carousel-item" data-position="prev">
+                                <img src="../assets/images/donate-2.png" alt="Character 2">
+                            </div>
+                            <div class="carousel-item active" data-position="active">
+                                <img src="../assets/images/donate-3.png" alt="Character 3">
+                            </div>
+                            <div class="carousel-item" data-position="next">
+                                <img src="../assets/images/donate-4.png" alt="Character 4">
+                            </div>
+                            <div class="carousel-item" data-position="next-2">
+                                <img src="../assets/images/donate-5.png" alt="Character 5">
+                            </div>
+                            <div class="carousel-item" data-position="hidden">
+                                <img src="../assets/images/donate-6.png" alt="Character 6">
+                            </div>
+                        </div>
+                        <div class="carousel-nav">
+                            <button class="prev-btn">◀</button>
+                            <button class="next-btn">▶</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const carousel = document.querySelector('.carousel');
+            const items = document.querySelectorAll('.carousel-item');
+            const prevBtn = document.querySelector('.prev-btn');
+            const nextBtn = document.querySelector('.next-btn');
+            
+            let currentIndex = 0;
+            const totalItems = items.length;
+            
+            // Initialize carousel positions
+            updateCarousel();
+            
+            // Handle next button click
+            nextBtn.addEventListener('click', function() {
+                currentIndex = (currentIndex + 1) % totalItems;
+                updateCarousel();
+            });
+            
+            // Handle previous button click
+            prevBtn.addEventListener('click', function() {
+                currentIndex = (currentIndex - 1 + totalItems) % totalItems;
+                updateCarousel();
+            });
+            
+            // Touch events for swiping
+            let touchStartX = 0;
+            let touchEndX = 0;
+            
+            carousel.addEventListener('touchstart', function(e) {
+                touchStartX = e.changedTouches[0].screenX;
+            });
+            
+            carousel.addEventListener('touchend', function(e) {
+                touchEndX = e.changedTouches[0].screenX;
+                handleSwipe();
+            });
+            
+            function handleSwipe() {
+                if (touchEndX < touchStartX - 50) {
+                    // Swipe left
+                    nextBtn.click();
+                } else if (touchEndX > touchStartX + 50) {
+                    // Swipe right
+                    prevBtn.click();
+                }
+            }
+            
+            // Update carousel items positions
+            function updateCarousel() {
+                items.forEach((item, index) => {
+                    // Remove all position classes
+                    item.classList.remove('active', 'prev', 'next', 'prev-2', 'next-2', 'hidden');
+                    
+                    // Calculate relative position
+                    let position = (index - currentIndex + totalItems) % totalItems;
+                    
+                    // Assign appropriate class based on position
+                    if (position === 0) {
+                        item.classList.add('active');
+                        item.setAttribute('data-position', 'active');
+                    } else if (position === 1 || position === -5) {
+                        item.classList.add('next');
+                        item.setAttribute('data-position', 'next');
+                    } else if (position === 2 || position === -4) {
+                        item.classList.add('next-2');
+                        item.setAttribute('data-position', 'next-2');
+                    } else if (position === totalItems - 1 || position === -1) {
+                        item.classList.add('prev');
+                        item.setAttribute('data-position', 'prev');
+                    } else if (position === totalItems - 2 || position === -2) {
+                        item.classList.add('prev-2');
+                        item.setAttribute('data-position', 'prev-2');
+                    } else {
+                        item.classList.add('hidden');
+                        item.setAttribute('data-position', 'hidden');
+                    }
+                });
+            }
+            
+            // Auto rotation (optional)
+            let autoRotate = setInterval(() => {
+                nextBtn.click();
+            }, 3000);
+            
+            // Pause auto rotation on hover
+            carousel.addEventListener('mouseenter', () => {
+                clearInterval(autoRotate);
+            });
+            
+            carousel.addEventListener('mouseleave', () => {
+                autoRotate = setInterval(() => {
+                    nextBtn.click();
+                }, 5000);
+            });
+        });
+    </script>
+</body>
+</html>
