@@ -399,37 +399,46 @@
         }
         
         /* Ad Popup Styles */
-        .popup-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: rgba(0, 0, 0, 0.7);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            opacity: 0;
-            transition: opacity 0.5s ease-in-out;
-        }
+		.popup-overlay {
+			position: fixed;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			background-color: rgba(0, 0, 0, 0.7);
+			display: none;
+			justify-content: center;
+			align-items: center;
+			z-index: 1000;
+			opacity: 0;
+			transition: opacity 0.5s ease-in-out;
+		}
 
-        .popup-container {
-            background-color: white;
-            border-radius: 15px;
-            padding: 25px;
-            width: 90%;
-            max-width: 700px;
-            max-height: 90vh;
-            overflow-y: auto;
-            position: relative;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            transform: scale(0.9);
-            transition: transform 0.5s ease-in-out;
-        }
+		.popup-container {
+			background-color: white;
+			border-radius: 15px;
+			padding: 25px;
+			width: 95%;
+			max-width: 950px;
+			max-height: 95vh;
+			overflow-y: auto;
+			position: relative;
+			box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			transform: scale(0.9);
+			transition: transform 0.5s ease-in-out;
+		}
+		
+		.ad-wrapper {
+			display: flex;
+			flex-direction: row;
+			flex-wrap: wrap;
+			justify-content: center;
+			gap: 20px;
+			margin-bottom: 15px;
+		}
 
         .popup-title {
             font-size: 23px;
@@ -447,14 +456,14 @@
             margin-bottom: 15px;
         }
 
-        .ad-container {
-            width: 300px;
-            height: 250px;
-            background-color: #f0f0f0;
-            border: 1px solid #ddd;
-            overflow: hidden;
-            position: relative;
-        }
+		.ad-container {
+			width: 300px;
+			height: 250px;
+			background-color: #f0f0f0;
+			border: 1px solid #ddd;
+			overflow: hidden;
+			position: relative;
+		}
 
         /* Show animation for popup */
         .popup-overlay.show {
@@ -581,6 +590,10 @@
                 font-size: 12px;
                 max-width: 300px;
             }
+			
+			.mobile-hide {
+				display: none;
+			}
         }
         
         @media screen and (max-width: 480px) {
@@ -697,15 +710,57 @@
         </div>
     </div>
 
-    <!-- Ad Popup -->
-    <div class="popup-overlay" id="adPopup">
-        <div class="popup-container">
-            <div class="popup-title">Nhấn vào quảng cáo<br>bất kỳ để đóng cửa sổ này !!</div>
-            <div class="ads-container" id="adsContainer">
-                <!-- Ads will be inserted here -->
-            </div>
-        </div>
-    </div>
+	<!-- Ad Popup HTML -->
+	<div class="popup-overlay" id="adPopup">
+		<div class="popup-container">
+			<div class="popup-title">Nhấn vào quảng cáo<br>bất kỳ để đóng cửa sổ này !!</div>
+			<div class="ads-container" id="adsContainer">
+				<div class="ad-wrapper">
+					<!-- First Ad -->
+					<div class="ad-container">
+						<script type="text/javascript">
+							atOptions = {
+								'key' : '232b712b4f3926add741ef3dacfa845b',
+								'format' : 'iframe',
+								'height' : 250,
+								'width' : 300,
+								'params' : {}
+							};
+							document.write('<scr' + 'ipt type="text/javascript" src="//snailthreatenedinvited.com/232b712b4f3926add741ef3dacfa845b/invoke.js"></scr' + 'ipt>');
+						</script>
+					</div>
+					
+					<!-- Second Ad (hidden on mobile) -->
+					<div class="ad-container mobile-hide">
+						<script type="text/javascript">
+							atOptions = {
+								'key' : '0e30a5fb7feed2a39cc356e389549986',
+								'format' : 'iframe',
+								'height' : 250,
+								'width' : 300,
+								'params' : {}
+							};
+							document.write('<scr' + 'ipt type="text/javascript" src="//snailthreatenedinvited.com/0e30a5fb7feed2a39cc356e389549986/invoke.js"></scr' + 'ipt>');
+						</script>
+					</div>
+					
+					<!-- Third Ad (hidden on mobile) -->
+					<div class="ad-container mobile-hide">
+						<script type="text/javascript">
+							atOptions = {
+								'key' : '7c7b5884fcb9c78838bb6fbb2e72739f',
+								'format' : 'iframe',
+								'height' : 250,
+								'width' : 300,
+								'params' : {}
+							};
+							document.write('<scr' + 'ipt type="text/javascript" src="//snailthreatenedinvited.com/7c7b5884fcb9c78838bb6fbb2e72739f/invoke.js"></scr' + 'ipt>');
+						</script>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -714,7 +769,8 @@
             const nextBtn = document.querySelector('.next-btn');
             const slideCounter = document.querySelector('.slide-counter');
             const aiButton = document.querySelector('.ai-btn');
-            const adPopup = document.getElementById('adPopup');
+			const adPopup = document.getElementById('adPopup');
+			let popupCloseCount = 0;
             const adsContainer = document.getElementById('adsContainer');
             
             let currentSlide = 0;
@@ -724,30 +780,6 @@
             const batchSize = 15; // Number of images to load per batch
             let isLoading = false; // Flag to prevent multiple loads
             
-			// Initialize adConfigs with your ad information
-			const adConfigs = [
-				{
-					key: '232b712b4f3926add741ef3dacfa845b',
-					format: 'iframe',
-					height: 250,
-					width: 300,
-					params: {}
-				},
-				{
-					key: '0e30a5fb7feed2a39cc356e389549986',
-					format: 'iframe',
-					height: 250,
-					width: 300,
-					params: {}
-				},
-				{
-					key: '7c7b5884fcb9c78838bb6fbb2e72739f',
-					format: 'iframe',
-					height: 250,
-					width: 300,
-					params: {}
-				}
-			];
             
             // Add event listener for cosplay button
             aiButton.addEventListener('click', function() {
@@ -759,111 +791,10 @@
                 return window.innerWidth <= 830;
             }
             
-			// Function to show ad popup with actual ad scripts
+			// Function to show ad popup
 			function showAdPopup() {
-				// Clear previous ads
-				adsContainer.innerHTML = '';
-				
-				// Determine how many ads to show based on device
-				// For mobile, show just 1 ad; for desktop, show all available ads
-				let selectedConfigs = [];
-				
-				if (isMobileDevice()) {
-					// On mobile, just show the first working ad
-					const workingKeys = ['232b712b4f3926add741ef3dacfa845b', '0e30a5fb7feed2a39cc356e389549986'];
-					for (let key of workingKeys) {
-						const config = adConfigs.find(config => config.key === key);
-						if (config) {
-							selectedConfigs = [config];
-							break; // Just get the first one that matches
-						}
-					}
-					
-					// If none of the working keys were found, use the first ad config
-					if (selectedConfigs.length === 0 && adConfigs.length > 0) {
-						selectedConfigs = [adConfigs[0]];
-					}
-				} else {
-					// On desktop, show all ads
-					selectedConfigs = [...adConfigs];
-				}
-				
-				// Create wrapper for ad layout
-				const adWrapper = document.createElement('div');
-				adWrapper.style.display = 'flex';
-				adWrapper.style.flexDirection = isMobileDevice() ? 'column' : 'row';
-				adWrapper.style.gap = '20px';
-				adWrapper.style.justifyContent = 'center';
-				adWrapper.style.flexWrap = 'wrap'; // Allow wrapping for multiple ads
-				adWrapper.style.maxWidth = isMobileDevice() ? '300px' : '650px'; // Limit max width
-				adWrapper.style.margin = '0 auto'; // Center the wrapper
-				adsContainer.appendChild(adWrapper);
-				
-				// Store the window references before showing ads
-				const initialWindows = Object.keys(window);
-				
-				// Create the ad containers and load the ads
-				selectedConfigs.forEach((adConfig, index) => {
-					const adContainer = document.createElement('div');
-					adContainer.className = 'ad-container';
-					adContainer.id = `ad-container-${index}`;
-					adWrapper.appendChild(adContainer);
-					
-					// Create isolated container for each ad
-					// Instead of nesting scripts inside divs, we'll add them directly to the DOM
-					// This helps avoid issues with script isolation and execution context
-					
-					// Create global variable for this ad in window scope
-					const adVarName = `atOptions_${index}`;
-					window[adVarName] = {
-						'key': adConfig.key,
-						'format': adConfig.format,
-						'height': adConfig.height,
-						'width': adConfig.width,
-						'params': {}
-					};
-					
-					// Create container with the exact ID that the ad script expects
-					const adPlaceholder = document.createElement('div');
-					adPlaceholder.id = adConfig.key;
-					adPlaceholder.style.width = '100%';
-					adPlaceholder.style.height = '100%';
-					adContainer.appendChild(adPlaceholder);
-					
-					// Load the ad script directly - this is more reliable
-					const adScript = document.createElement('script');
-					adScript.async = true;
-					adScript.src = `//snailthreatenedinvited.com/${adConfig.key}/invoke.js`;
-					
-					// Give the script time to load, then check if it's working
-					adScript.onload = function() {
-						console.log(`Ad script ${index} loaded successfully`);
-						// Check if iframe was created after a short delay
-						setTimeout(() => {
-							const hasIframe = adContainer.querySelector('iframe');
-							if (!hasIframe) {
-								console.log(`No iframe found in ad container ${index}, trying alternative loading method`);
-								// Try alternative method - direct script injection
-								const scriptContent = document.createElement('script');
-								scriptContent.type = 'text/javascript';
-								scriptContent.innerHTML = `
-									atOptions = {
-										'key': '${adConfig.key}',
-										'format': '${adConfig.format}',
-										'height': ${adConfig.height},
-										'width': ${adConfig.width},
-										'params': {}
-									};
-									document.write('<scr'+'ipt type="text/javascript" src="//snailthreatenedinvited.com/${adConfig.key}/invoke.js"></scr'+'ipt>');
-								`;
-								adContainer.appendChild(scriptContent);
-							}
-						}, 1000);
-					};
-					
-					// Add the script to the document body
-					document.body.appendChild(adScript);
-				});
+				// Store window.length before showing ads
+				const initialWindowLength = Object.keys(window).length;
 				
 				// Show popup
 				adPopup.style.display = 'flex';
@@ -871,70 +802,31 @@
 					adPopup.classList.add('show');
 				}, 10);
 				
-				// Set up a global click handler to detect ad clicks
-				const clickHandler = function(event) {
-					// Short delay to allow new window/tab to open if an ad was clicked
+				// Set up document click handler
+				document.addEventListener('click', function clickHandler(event) {
+					// Check after a short delay to allow new window/tab to open
 					setTimeout(() => {
-						// Check if any new window references have appeared
-						const newWindows = Object.keys(window).filter(key => !initialWindows.includes(key));
-						const windowsOpened = newWindows.length > 0;
-						
-						// Check if we navigated away from the page and back (common in mobile)
-						const navigated = document.hidden;
-						
-						// If either condition is met, close the popup
-						if (windowsOpened || navigated) {
+						// Check if window keys changed (new window opened)
+						const newWindowLength = Object.keys(window).length;
+						if (newWindowLength > initialWindowLength || document.hidden) {
+							// Ad was clicked - close popup
 							closePopupAfterAdClick();
 							document.removeEventListener('click', clickHandler);
-							document.removeEventListener('visibilitychange', visibilityHandler);
 						}
-					}, 300);
-				};
+					}, 500);
+				});
 				
-				// Set up visibility change handler for mobile
-				const visibilityHandler = function() {
+				// Add visibility change detection for when user returns from ad page
+				document.addEventListener('visibilitychange', function visibilityHandler() {
 					if (document.hidden) {
-						// Page is now hidden, likely because ad opened in new tab
+						// User likely clicked an ad - close popup when they return
 						setTimeout(() => {
 							closePopupAfterAdClick();
-							document.removeEventListener('click', clickHandler);
 							document.removeEventListener('visibilitychange', visibilityHandler);
-						}, 300);
+						}, 500);
 					}
-				};
-				
-				// Add the event listeners
-				document.addEventListener('click', clickHandler);
-				document.addEventListener('visibilitychange', visibilityHandler);
+				});
 			}
-            
-            // Track how many times the popup has been closed
-            let popupCloseCount = 0;
-            
-          // Function to close popup after ad click
-			function closePopupAfterAdClick() {
-				adPopup.classList.remove('show');
-				setTimeout(() => {
-					adPopup.style.display = 'none';
-					
-					// Increment the close count
-					popupCloseCount++;
-					
-					// Set timeout for next popup display
-					if (popupCloseCount === 1) {
-						// Show popup again after 1 minute if it's the first close
-						setTimeout(() => {
-							showAdPopup();
-						}, 1 * 60 * 1000); // 1 minute in milliseconds
-					} else if (popupCloseCount === 2) {
-						// Show popup again after 2 minutes if it's the second close
-						setTimeout(() => {
-							showAdPopup();
-						}, 2 * 60 * 1000); // 2 minutes in milliseconds
-					}
-				}, 500);
-			}
-
             
             // Function to fetch all available image paths
             async function fetchAllImagePaths() {
@@ -1201,6 +1093,7 @@
                     nextSlide();
                 }
             }
+			
             
             // Button event listeners
             prevBtn.addEventListener('click', prevSlide);
@@ -1210,8 +1103,28 @@
             fetchAllImagePaths();
             
             // Show ad popup after 5 seconds
-            setTimeout(showAdPopup, 5000);
-        });
+            setTimeout(showAdPopup, 3000);
+			
+    // Function to close popup after ad click
+    function closePopupAfterAdClick() {
+        adPopup.classList.remove('show');
+        setTimeout(() => {
+            adPopup.style.display = 'none';
+            
+            // Increment the close count
+            popupCloseCount++;
+            
+            // Set timeout for next popup display
+            if (popupCloseCount === 1) {
+                // Show popup again after 1 minute
+                setTimeout(showAdPopup, 1 * 60 * 1000);
+            } else if (popupCloseCount === 2) {
+                // Show popup again after 2 minutes
+                setTimeout(showAdPopup, 2 * 60 * 1000);
+            }
+        }, 500);
+    }
+});
     </script>
 </body>
 </html>
