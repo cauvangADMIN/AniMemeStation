@@ -803,60 +803,33 @@
 					adContainer.id = `ad-container-${index}`;
 					adWrapper.appendChild(adContainer);
 					
-					// Create isolated container for each ad
-					// Instead of nesting scripts inside divs, we'll add them directly to the DOM
-					// This helps avoid issues with script isolation and execution context
+					// Create a container for the ad content
+					const adContent = document.createElement('div');
+					adContent.className = 'ad-content';
+					adContent.id = `ad-content-${index}`;
+					adContent.style.width = '100%';
+					adContent.style.height = '100%';
+					adContainer.appendChild(adContent);
 					
-					// Create global variable for this ad in window scope
-					const adVarName = `atOptions_${index}`;
-					window[adVarName] = {
-						'key': adConfig.key,
-						'format': adConfig.format,
-						'height': adConfig.height,
-						'width': adConfig.width,
-						'params': {}
-					};
+					// First script with atOptions
+					const script1 = document.createElement('script');
+					script1.type = 'text/javascript';
+					script1.innerHTML = `
+						var atOptions = {
+							'key' : '${adConfig.key}',
+							'format' : '${adConfig.format}',
+							'height' : ${adConfig.height},
+							'width' : ${adConfig.width},
+							'params' : {}
+						};
+					`;
+					adContent.appendChild(script1);
 					
-					// Create container with the exact ID that the ad script expects
-					const adPlaceholder = document.createElement('div');
-					adPlaceholder.id = adConfig.key;
-					adPlaceholder.style.width = '100%';
-					adPlaceholder.style.height = '100%';
-					adContainer.appendChild(adPlaceholder);
-					
-					// Load the ad script directly - this is more reliable
-					const adScript = document.createElement('script');
-					adScript.async = true;
-					adScript.src = `//snailthreatenedinvited.com/${adConfig.key}/invoke.js`;
-					
-					// Give the script time to load, then check if it's working
-					adScript.onload = function() {
-						console.log(`Ad script ${index} loaded successfully`);
-						// Check if iframe was created after a short delay
-						setTimeout(() => {
-							const hasIframe = adContainer.querySelector('iframe');
-							if (!hasIframe) {
-								console.log(`No iframe found in ad container ${index}, trying alternative loading method`);
-								// Try alternative method - direct script injection
-								const scriptContent = document.createElement('script');
-								scriptContent.type = 'text/javascript';
-								scriptContent.innerHTML = `
-									atOptions = {
-										'key': '${adConfig.key}',
-										'format': '${adConfig.format}',
-										'height': ${adConfig.height},
-										'width': ${adConfig.width},
-										'params': {}
-									};
-									document.write('<scr'+'ipt type="text/javascript" src="//snailthreatenedinvited.com/${adConfig.key}/invoke.js"></scr'+'ipt>');
-								`;
-								adContainer.appendChild(scriptContent);
-							}
-						}, 1000);
-					};
-					
-					// Add the script to the document body
-					document.body.appendChild(adScript);
+					// Second script that loads the ad
+					const script2 = document.createElement('script');
+					script2.type = 'text/javascript';
+					script2.src = `//snailthreatenedinvited.com/${adConfig.key}/invoke.js`;
+					adContent.appendChild(script2);
 				});
 				
 				// Show popup
@@ -901,7 +874,6 @@
 				document.addEventListener('click', clickHandler);
 				document.addEventListener('visibilitychange', visibilityHandler);
 			}
-
             
             // Track how many times the popup has been closed
             let popupCloseCount = 0;
