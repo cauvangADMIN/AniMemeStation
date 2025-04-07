@@ -257,6 +257,7 @@
             background-color: #f0f0f0;
             border: 1px solid #ddd;
             overflow: hidden;
+            cursor: pointer; /* Added to make it clear it's clickable */
         }
 
         /* Show animation for popup */
@@ -564,6 +565,14 @@
             }
         }
         
+        // Function to close popup
+        function closePopup() {
+            adPopup.classList.remove('show');
+            setTimeout(() => {
+                adPopup.style.display = 'none';
+            }, 500);
+        }
+        
         // Function to prepare and display ads in the popup
         function prepareAdPopup() {
             // Clear previous ads
@@ -580,6 +589,14 @@
             for (let i = 0; i < numAds; i++) {
                 const adContainer = document.createElement('div');
                 adContainer.className = 'ad-container';
+                adContainer.style.cursor = 'pointer'; // Make sure cursor shows it's clickable
+                
+                // Add click event listener directly to the container
+                adContainer.addEventListener('click', function(e) {
+                    e.stopPropagation(); // Prevent event bubbling
+                    closePopup();
+                });
+                
                 adsContainer.appendChild(adContainer);
                 
                 // Load ad
@@ -596,17 +613,13 @@
             setTimeout(() => {
                 adPopup.classList.add('show');
             }, 10);
-        }
-        
-        // Function to close popup after ad click
-        function closePopupAfterAdClick(e) {
-            // Only close if the click is inside an ad container
-            if (e.target.closest('.ad-container')) {
-                adPopup.classList.remove('show');
-                setTimeout(() => {
-                    adPopup.style.display = 'none';
-                }, 500);
-            }
+            
+            // Add click handlers to ad containers immediately after they're created
+            document.querySelectorAll('.ad-container').forEach(container => {
+                container.addEventListener('click', function() {
+                    closePopup();
+                });
+            });
         }
         
         // Initialize the gallery
@@ -633,25 +646,43 @@
         // Call the init function
         initGallery();
         
-        // Add event listeners for ad containers
+        // Handle document clicks
         document.addEventListener('click', function(e) {
             // Check if the click is on an iframe within an ad container
-            if (e.target.tagName === 'IFRAME' && e.target.closest('.ad-container')) {
-                closePopupAfterAdClick(e);
-                return false;
+            const adContainer = e.target.closest('.ad-container');
+            if (adContainer) {
+                closePopup();
+                return;
             }
         }, true);  // Use capture phase to detect clicks inside iframes
         
-        // Detect all ad container clicks to close popup
-        document.querySelectorAll('.ad-container').forEach(container => {
-            container.addEventListener('click', closePopupAfterAdClick, true);
+        // Update the click handler for the popup overlay
+        document.addEventListener('DOMContentLoaded', function() {
+            const popupOverlay = document.getElementById('adPopup');
+            const popupContainer = document.querySelector('.popup-container');
+            
+            // Make clicking directly on the overlay close the popup
+            popupOverlay.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closePopup();
+                }
+            });
+            
+            // Prevent clicks on the popup container from closing it
+            // unless they're on an ad container
+            popupContainer.addEventListener('click', function(e) {
+                if (!e.target.closest('.ad-container')) {
+                    e.stopPropagation();
+                }
+            });
         });
         
-        // Prevent clicks outside ad containers from closing the popup
-        document.querySelector('.popup-container').addEventListener('click', function(e) {
-            // Stop propagation only if click is not inside an ad container
-            if (!e.target.closest('.ad-container')) {
-                e.stopPropagation();
+        // Add specific handler for iframe clicks
+        window.addEventListener('message', function(event) {
+            // Try to handle messages from iframes indicating clicks
+            if (event.data && typeof event.data === 'string' && 
+                (event.data.includes('click') || event.data.includes('ad'))) {
+                closePopup();
             }
         });
         
@@ -731,22 +762,6 @@
             // Observe the loadMoreText element as a trigger point
             observer.observe(document.getElementById('loadMoreText'));
         }
-
-        // Make sure clicks on any part of an ad container close the popup
-        document.addEventListener('DOMContentLoaded', function() {
-            // Add event listeners dynamically after DOM is loaded
-            document.querySelectorAll('.ad-container').forEach(container => {
-                container.addEventListener('click', closePopupAfterAdClick, true);
-            });
-            
-            // Prevent clicks on the popup overlay from closing it
-            document.getElementById('adPopup').addEventListener('click', function(e) {
-                // If clicking directly on the overlay (not its children)
-                if (e.target === this) {
-                    e.stopPropagation();
-                }
-            });
-        });
     </script>
 </body>
 </html>

@@ -759,62 +759,64 @@
                 return window.innerWidth <= 830;
             }
             
-            // Function to show ad popup with real ads
-            function showAdPopup() {
-                // Clear previous ads
-                adsContainer.innerHTML = '';
-                
-                // Determine how many ads to show based on device
-                const adsToShow = isMobileDevice() ? 1 : 2;
-                
-                // Randomly select which ads to use
-                const shuffledAdConfigs = [...adConfigs].sort(() => 0.5 - Math.random()).slice(0, adsToShow);
-                
-                // Create wrapper for desktop to ensure horizontal layout
-                const adWrapper = document.createElement('div');
-                adWrapper.style.display = 'flex';
-                adWrapper.style.flexDirection = isMobileDevice() ? 'column' : 'row';
-                adWrapper.style.gap = '20px';
-                adWrapper.style.justifyContent = 'center';
-                adsContainer.appendChild(adWrapper);
-                
-                // Create the ad containers and load the ads
-                shuffledAdConfigs.forEach((adConfig, index) => {
-                    const adContainer = document.createElement('div');
-                    adContainer.className = 'ad-container';
-                    adContainer.id = `ad-container-${index}`;
-                    adWrapper.appendChild(adContainer);
-                    
-                    // Create a transparent overlay to detect clicks
-                    const clickOverlay = document.createElement('div');
-                    clickOverlay.style.position = 'absolute';
-                    clickOverlay.style.top = '0';
-                    clickOverlay.style.left = '0';
-                    clickOverlay.style.width = '100%';
-                    clickOverlay.style.height = '100%';
-                    clickOverlay.style.zIndex = '10';
-                    clickOverlay.style.cursor = 'pointer';
-                    
-                    // When overlay is clicked, close the popup
-                    clickOverlay.addEventListener('click', closePopupAfterAdClick);
-                    adContainer.appendChild(clickOverlay);
-                    
-                    // Set up window options for this ad
-                    window.atOptions = adConfig;
-                    
-                    // Create and append the ad script
-                    const script = document.createElement('script');
-                    script.type = 'text/javascript';
-                    script.src = `//snailthreatenedinvited.com/${adConfig.key}/invoke.js`;
-                    document.body.appendChild(script);
-                });
-                
-                // Show popup
-                adPopup.style.display = 'flex';
-                setTimeout(() => {
-                    adPopup.classList.add('show');
-                }, 10);
-            }
+			// Function to show ad popup with real ads
+			function showAdPopup() {
+				// Clear previous ads
+				adsContainer.innerHTML = '';
+				
+				// Determine how many ads to show based on device
+				const adsToShow = isMobileDevice() ? 1 : 2;
+				
+				// Randomly select which ads to use
+				const shuffledAdConfigs = [...adConfigs].sort(() => 0.5 - Math.random()).slice(0, adsToShow);
+				
+				// Create wrapper for desktop to ensure horizontal layout
+				const adWrapper = document.createElement('div');
+				adWrapper.style.display = 'flex';
+				adWrapper.style.flexDirection = isMobileDevice() ? 'column' : 'row';
+				adWrapper.style.gap = '20px';
+				adWrapper.style.justifyContent = 'center';
+				adsContainer.appendChild(adWrapper);
+				
+				// Create the ad containers and load the ads
+				shuffledAdConfigs.forEach((adConfig, index) => {
+					const adContainer = document.createElement('div');
+					adContainer.className = 'ad-container';
+					adContainer.id = `ad-container-${index}`;
+					adWrapper.appendChild(adContainer);
+					
+					// Create a transparent overlay to detect clicks
+					const clickOverlay = document.createElement('div');
+					clickOverlay.style.position = 'absolute';
+					clickOverlay.style.top = '0';
+					clickOverlay.style.left = '0';
+					clickOverlay.style.width = '100%';
+					clickOverlay.style.height = '100%';
+					clickOverlay.style.zIndex = '10';
+					clickOverlay.style.cursor = 'pointer';
+					
+					// When overlay is clicked, close the popup
+					clickOverlay.addEventListener('click', closePopupAfterAdClick);
+					adContainer.appendChild(clickOverlay);
+					
+					// Create an iframe to load the ad directly inside the container
+					const iframe = document.createElement('iframe');
+					iframe.width = adConfig.width;
+					iframe.height = adConfig.height;
+					iframe.frameBorder = '0';
+					iframe.scrolling = 'no';
+					iframe.src = `//snailthreatenedinvited.com/${adConfig.key}/invoke.js`;
+					
+					// Append the iframe to the ad container instead of the body
+					adContainer.appendChild(iframe);
+				});
+				
+				// Show popup
+				adPopup.style.display = 'flex';
+				setTimeout(() => {
+					adPopup.classList.add('show');
+				}, 10);
+			}
             
             // Track how many times the popup has been closed
             let popupCloseCount = 0;
