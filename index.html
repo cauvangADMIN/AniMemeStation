@@ -724,7 +724,7 @@
             const batchSize = 15; // Number of images to load per batch
             let isLoading = false; // Flag to prevent multiple loads
             
-            // Initialize adConfigs with your ad information
+           // Initialize adConfigs with your ad information
 			const adConfigs = [
 				{
 					key: '232b712b4f3926add741ef3dacfa845b',
@@ -767,10 +767,25 @@
 				// Determine how many ads to show based on device
 				const adsToShow = isMobileDevice() ? 1 : 2;
 				
-				// Randomly select which ads to use
-				const shuffledAdConfigs = [...adConfigs].sort(() => 0.5 - Math.random()).slice(0, adsToShow);
+				// Randomly select which ads to use (but always include the working ones first)
+				let selectedConfigs = [];
+				// Always include these two keys first as they're confirmed working
+				const workingKeys = ['232b712b4f3926add741ef3dacfa845b', '0e30a5fb7feed2a39cc356e389549986'];
 				
-				// Create wrapper for desktop to ensure horizontal layout
+				// Add working keys first (up to the adsToShow limit)
+				for (let i = 0; i < Math.min(adsToShow, workingKeys.length); i++) {
+					const config = adConfigs.find(config => config.key === workingKeys[i]);
+					if (config) selectedConfigs.push(config);
+				}
+				
+				// If we need more ads, randomly select from remaining configs
+				if (selectedConfigs.length < adsToShow) {
+					const remainingConfigs = adConfigs.filter(config => !workingKeys.includes(config.key));
+					const shuffled = [...remainingConfigs].sort(() => 0.5 - Math.random());
+					selectedConfigs = [...selectedConfigs, ...shuffled.slice(0, adsToShow - selectedConfigs.length)];
+				}
+				
+				// Create wrapper for ad layout
 				const adWrapper = document.createElement('div');
 				adWrapper.style.display = 'flex';
 				adWrapper.style.flexDirection = isMobileDevice() ? 'column' : 'row';
@@ -778,8 +793,11 @@
 				adWrapper.style.justifyContent = 'center';
 				adsContainer.appendChild(adWrapper);
 				
+				// Store the window references before showing ads
+				const initialWindows = Object.keys(window);
+				
 				// Create the ad containers and load the ads
-				shuffledAdConfigs.forEach((adConfig, index) => {
+				selectedConfigs.forEach((adConfig, index) => {
 					const adContainer = document.createElement('div');
 					adContainer.className = 'ad-container';
 					adContainer.id = `ad-container-${index}`;
@@ -787,16 +805,17 @@
 					
 					// Create a container for the ad content
 					const adContent = document.createElement('div');
+					adContent.className = 'ad-content';
 					adContent.id = `ad-content-${index}`;
 					adContent.style.width = '100%';
 					adContent.style.height = '100%';
 					adContainer.appendChild(adContent);
 					
-					// Insert the actual ad script
+					// First script with atOptions
 					const script1 = document.createElement('script');
 					script1.type = 'text/javascript';
-					script1.text = `
-						atOptions = {
+					script1.innerHTML = `
+						var atOptions = {
 							'key' : '${adConfig.key}',
 							'format' : '${adConfig.format}',
 							'height' : ${adConfig.height},
@@ -806,22 +825,11 @@
 					`;
 					adContent.appendChild(script1);
 					
+					// Second script that loads the ad
 					const script2 = document.createElement('script');
 					script2.type = 'text/javascript';
 					script2.src = `//snailthreatenedinvited.com/${adConfig.key}/invoke.js`;
 					adContent.appendChild(script2);
-					
-					// Add event listener to detect clicks on the iframe
-					// We need to wait for the iframe to be created by the ad script
-					setTimeout(() => {
-						const iframe = adContainer.querySelector('iframe');
-						if (iframe) {
-							iframe.style.zIndex = '10';
-							iframe.addEventListener('load', function() {
-								iframe.contentWindow.document.body.addEventListener('click', closePopupAfterAdClick);
-							});
-						}
-					}, 1000);
 				});
 				
 				// Show popup
@@ -829,6 +837,42 @@
 				setTimeout(() => {
 					adPopup.classList.add('show');
 				}, 10);
+				
+				// Set up a global click handler to detect ad clicks
+				const clickHandler = function(event) {
+					// Short delay to allow new window/tab to open if an ad was clicked
+					setTimeout(() => {
+						// Check if any new window references have appeared
+						const newWindows = Object.keys(window).filter(key => !initialWindows.includes(key));
+						const windowsOpened = newWindows.length > 0;
+						
+						// Check if we navigated away from the page and back (common in mobile)
+						const navigated = document.hidden;
+						
+						// If either condition is met, close the popup
+						if (windowsOpened || navigated) {
+							closePopupAfterAdClick();
+							document.removeEventListener('click', clickHandler);
+							document.removeEventListener('visibilitychange', visibilityHandler);
+						}
+					}, 300);
+				};
+				
+				// Set up visibility change handler for mobile
+				const visibilityHandler = function() {
+					if (document.hidden) {
+						// Page is now hidden, likely because ad opened in new tab
+						setTimeout(() => {
+							closePopupAfterAdClick();
+							document.removeEventListener('click', clickHandler);
+							document.removeEventListener('visibilitychange', visibilityHandler);
+						}, 300);
+					}
+				};
+				
+				// Add the event listeners
+				document.addEventListener('click', clickHandler);
+				document.addEventListener('visibilitychange', visibilityHandler);
 			}
             
             // Track how many times the popup has been closed
@@ -845,7 +889,7 @@
 					
 					// Set timeout for next popup display
 					if (popupCloseCount === 1) {
-						// Show popup again after 1 minutes if it's the first close
+						// Show popup again after 1 minute if it's the first close
 						setTimeout(() => {
 							showAdPopup();
 						}, 1 * 60 * 1000); // 1 minute in milliseconds
