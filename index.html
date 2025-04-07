@@ -759,7 +759,7 @@
                 return window.innerWidth <= 830;
             }
             
-			// Function to show ad popup with real ads
+			// Function to show ad popup with fixed implementation
 			function showAdPopup() {
 				// Clear previous ads
 				adsContainer.innerHTML = '';
@@ -799,16 +799,24 @@
 					clickOverlay.addEventListener('click', closePopupAfterAdClick);
 					adContainer.appendChild(clickOverlay);
 					
-					// Create an iframe to load the ad directly inside the container
-					const iframe = document.createElement('iframe');
-					iframe.width = adConfig.width;
-					iframe.height = adConfig.height;
-					iframe.frameBorder = '0';
-					iframe.scrolling = 'no';
-					iframe.src = `//snailthreatenedinvited.com/${adConfig.key}/invoke.js`;
+					// Create a container for the ad content
+					const adContent = document.createElement('div');
+					adContent.style.width = '100%';
+					adContent.style.height = '100%';
+					adContent.style.backgroundColor = '#f0f0f0';
+					adContent.style.display = 'flex';
+					adContent.style.justifyContent = 'center';
+					adContent.style.alignItems = 'center';
 					
-					// Append the iframe to the ad container instead of the body
-					adContainer.appendChild(iframe);
+					// Add placeholder text and styling for the ad
+					adContent.innerHTML = `
+						<div style="text-align: center; padding: 10px;">
+							<div style="font-weight: bold; margin-bottom: 5px; color: #444;">Advertisement</div>
+							<div style="font-size: 14px; color: #666;">Click to continue</div>
+						</div>
+					`;
+					
+					adContainer.appendChild(adContent);
 				});
 				
 				// Show popup
