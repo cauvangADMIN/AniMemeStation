@@ -419,7 +419,7 @@
             border-radius: 15px;
             padding: 25px;
             width: 90%;
-            max-width: 650px; /* Increased for 2 ads side by side */
+            max-width: 700px;
             max-height: 90vh;
             overflow-y: auto;
             position: relative;
@@ -441,7 +441,7 @@
 
         .ads-container {
             display: flex;
-            flex-wrap: wrap;
+            flex-direction: row;
             justify-content: center;
             gap: 20px;
             margin-bottom: 15px;
@@ -453,65 +453,7 @@
             background-color: #f0f0f0;
             border: 1px solid #ddd;
             overflow: hidden;
-        }
-
-        /* Fake ad for testing */
-        .fake-ad {
-            width: 300px;
-            height: 250px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            text-align: center;
-            padding: 15px;
-            box-sizing: border-box;
-        }
-
-        .fake-ad-1 {
-            background: linear-gradient(135deg, #ff9966 0%, #ff5e62 100%);
-            color: white;
-        }
-
-        .fake-ad-2 {
-            background: linear-gradient(135deg, #56CCF2 0%, #2F80ED 100%);
-            color: white;
-        }
-
-        .fake-ad h3 {
-            font-size: 28px;
-            margin-bottom: 10px;
-        }
-
-        .fake-ad p {
-            font-size: 16px;
-            margin-bottom: 15px;
-        }
-
-        .fake-ad button {
-            background-color: white;
-            border: none;
-            color: #333;
-            padding: 8px 18px;
-            border-radius: 20px;
-            font-weight: bold;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .fake-ad-1 button {
-            color: #ff5e62;
-        }
-
-        .fake-ad-2 button {
-            color: #2F80ED;
-        }
-
-        .fake-ad button:hover {
-            transform: scale(1.05);
-            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+            position: relative;
         }
 
         /* Show animation for popup */
@@ -779,7 +721,7 @@
             let allMemeImages = []; // All images paths
             let loadedMemeImages = []; // Currently loaded images
             let totalImageCount = 0; // Total count of all available images
-            const batchSize = 10; // Number of images to load per batch
+            const batchSize = 15; // Number of images to load per batch
             let isLoading = false; // Flag to prevent multiple loads
             
             // Ad configuration
@@ -807,28 +749,6 @@
                 }
             ];
             
-            // Fake ads for testing
-            const fakeAds = [
-                {
-                    title: 'Special Offer!',
-                    description: 'Get 50% off on premium memes today',
-                    buttonText: 'Click Here',
-                    class: 'fake-ad-1'
-                },
-                {
-                    title: 'New Collection!',
-                    description: 'Explore our exclusive meme templates',
-                    buttonText: 'See Now',
-                    class: 'fake-ad-2'
-                },
-                {
-                    title: 'Join Premium',
-                    description: 'Access unlimited HD memes & templates',
-                    buttonText: 'Join Now',
-                    class: 'fake-ad-1'
-                }
-            ];
-            
             // Add event listener for cosplay button
             aiButton.addEventListener('click', function() {
                 window.location.href = 'pages/cosplay.html';
@@ -839,7 +759,7 @@
                 return window.innerWidth <= 830;
             }
             
-            // Function to show ad popup with appropriate number of ads
+            // Function to show ad popup with real ads
             function showAdPopup() {
                 // Clear previous ads
                 adsContainer.innerHTML = '';
@@ -848,58 +768,46 @@
                 const adsToShow = isMobileDevice() ? 1 : 2;
                 
                 // Randomly select which ads to use
-                const shuffledFakeAds = [...fakeAds].sort(() => 0.5 - Math.random());
+                const shuffledAdConfigs = [...adConfigs].sort(() => 0.5 - Math.random()).slice(0, adsToShow);
                 
-                for (let i = 0; i < adsToShow; i++) {
+                // Create wrapper for desktop to ensure horizontal layout
+                const adWrapper = document.createElement('div');
+                adWrapper.style.display = 'flex';
+                adWrapper.style.flexDirection = isMobileDevice() ? 'column' : 'row';
+                adWrapper.style.gap = '20px';
+                adWrapper.style.justifyContent = 'center';
+                adsContainer.appendChild(adWrapper);
+                
+                // Create the ad containers and load the ads
+                shuffledAdConfigs.forEach((adConfig, index) => {
                     const adContainer = document.createElement('div');
                     adContainer.className = 'ad-container';
+                    adContainer.id = `ad-container-${index}`;
+                    adWrapper.appendChild(adContainer);
                     
-                    // Create fake ad for testing
-                    const fakeAd = document.createElement('div');
-                    fakeAd.className = `fake-ad ${shuffledFakeAds[i].class}`;
+                    // Create a transparent overlay to detect clicks
+                    const clickOverlay = document.createElement('div');
+                    clickOverlay.style.position = 'absolute';
+                    clickOverlay.style.top = '0';
+                    clickOverlay.style.left = '0';
+                    clickOverlay.style.width = '100%';
+                    clickOverlay.style.height = '100%';
+                    clickOverlay.style.zIndex = '10';
+                    clickOverlay.style.cursor = 'pointer';
                     
-                    fakeAd.innerHTML = `
-                        <h3>${shuffledFakeAds[i].title}</h3>
-                        <p>${shuffledFakeAds[i].description}</p>
-                        <button>${shuffledFakeAds[i].buttonText}</button>
-                    `;
+                    // When overlay is clicked, close the popup
+                    clickOverlay.addEventListener('click', closePopupAfterAdClick);
+                    adContainer.appendChild(clickOverlay);
                     
-                    // Add click event to close popup
-                    fakeAd.addEventListener('click', closePopupAfterAdClick);
+                    // Set up window options for this ad
+                    window.atOptions = adConfig;
                     
-                    adContainer.appendChild(fakeAd);
-                    adsContainer.appendChild(adContainer);
-                    
-                    // In a real implementation, you would try to load the real ad here
-                    // Example code for real implementation (commented out for now):
-                    /*
-                    try {
-                        // Ad options
-                        window.atOptions = adConfigs[i]; 
-                        
-                        // Create and append the script
-                        const script = document.createElement('script');
-                        script.type = 'text/javascript';
-                        script.src = `//snailthreatenedinvited.com/${adConfigs[i].key}/invoke.js`;
-                        
-                        // When ad script loads successfully, hide the fake ad
-                        script.onload = function() {
-                            fakeAd.style.display = 'none';
-                        };
-                        
-                        // If ad script fails, show the fake ad
-                        script.onerror = function() {
-                            fakeAd.style.display = 'flex';
-                        };
-                        
-                        document.body.appendChild(script);
-                    } catch (e) {
-                        console.error('Error loading ad script:', e);
-                        // Ensure fake ad is visible if there's an error
-                        fakeAd.style.display = 'flex';
-                    }
-                    */
-                }
+                    // Create and append the ad script
+                    const script = document.createElement('script');
+                    script.type = 'text/javascript';
+                    script.src = `//snailthreatenedinvited.com/${adConfig.key}/invoke.js`;
+                    document.body.appendChild(script);
+                });
                 
                 // Show popup
                 adPopup.style.display = 'flex';
@@ -920,24 +828,20 @@
                     // Increment the close count
                     popupCloseCount++;
                     
-                    // Show popup again after 3 minutes if it's the first or second close
-                    if (popupCloseCount <= 2) {
+                    // Set timeout for next popup display
+                    if (popupCloseCount === 1) {
+                        // Show popup again after 1 minutes if it's the first close
                         setTimeout(() => {
                             showAdPopup();
-                        }, 2 * 60 * 1000); // 3 minutes in milliseconds
+                        }, 1 * 60 * 1000); // 1 minutes in milliseconds
+                    } else if (popupCloseCount === 2) {
+                        // Show popup again after 2 minutes if it's the second close
+                        setTimeout(() => {
+                            showAdPopup();
+                        }, 2 * 60 * 1000); // 2 minutes in milliseconds
                     }
                 }, 500);
             }
-            
-            // Detect actual ad iframe clicks
-            document.addEventListener('click', function(e) {
-                // Check if the click is on an iframe within the ad container
-                if (e.target.tagName === 'IFRAME' && e.target.closest('#adsContainer')) {
-                    // Close the popup
-                    closePopupAfterAdClick();
-                    return false;
-                }
-            }, true);  // Use capture phase to detect clicks inside iframes
             
             // Function to fetch all available image paths
             async function fetchAllImagePaths() {
@@ -949,29 +853,17 @@
                         </div>
                     `;
                     
-                    // In a real environment, this would be replaced with an API call
-                    // to fetch the list of images from the server
-                    // For this example, we'll simulate a server response
-                    
-                    // Simulate network delay
                     await new Promise(resolve => setTimeout(resolve, 800));
-                    
-                    // The following code simulates a server response
-                    // In a real implementation, this would be replaced with a fetch call
-                    // to an API endpoint that returns the list of image paths
                     
                     // Simulated response - in real implementation, replace with actual API call
                     const memeFolder = 'assets/images/meme/';
                     const simulatedPaths = [];
                     
-                    // Create a list of potential images to check
                     // No limit - checking all possible images (in a real environment this would come from the server)
                     for (let i = 1; i <= 150; i++) { // Simulating 100 images
                         simulatedPaths.push(`${memeFolder}meme${i}.jpg`);
                     }
                     
-                    // Check for other potential naming patterns
-                    // Example: images named with dates
                     const today = new Date();
                     for (let i = 0; i < 30; i++) { // Looking back 30 days
                         const date = new Date();
@@ -979,10 +871,7 @@
                         const dateStr = date.toISOString().split('T')[0]; // YYYY-MM-DD format
                         simulatedPaths.push(`${memeFolder}meme_${dateStr}.jpg`);
                     }
-                    
-                    // Create an array of promises to check all images
-                    // Note: In a real server environment, you wouldn't do this client-side.
-                    // Instead, the server would return the complete list of available image paths.
+
                     const imagePromises = simulatedPaths.map(src => {
                         return new Promise(resolve => {
                             const img = new Image();
@@ -1063,17 +952,11 @@
                 }
             }
             
-            // Function to sort images by newest first
             function sortImagesByNewestFirst(images) {
-                // This function sorts images by their naming pattern
-                // Assuming higher numbers in filenames = newer images
                 return images.sort((a, b) => {
-                    // Try to extract a number from the filename
                     const getImageNumber = (path) => {
-                        // Extract filename from path
                         const filename = path.split('/').pop();
                         
-                        // First check if it has a date format (YYYY-MM-DD)
                         const dateMatch = filename.match(/(\d{4}-\d{2}-\d{2})/);
                         if (dateMatch) {
                             // Higher timestamp = newer image

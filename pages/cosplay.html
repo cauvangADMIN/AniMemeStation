@@ -259,61 +259,6 @@
             overflow: hidden;
         }
 
-        /* Fake ad for testing */
-        .fake-ad {
-            width: 300px;
-            height: 250px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            background: linear-gradient(135deg, #ff9966 0%, #ff5e62 100%);
-            color: white;
-            cursor: pointer;
-            text-align: center;
-            padding: 15px;
-            box-sizing: border-box;
-        }
-
-        .fake-ad.color-1 {
-            background: linear-gradient(135deg, #ff9966 0%, #ff5e62 100%);
-        }
-
-        .fake-ad.color-2 {
-            background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%);
-        }
-
-        .fake-ad.color-3 {
-            background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
-        }
-
-        .fake-ad h3 {
-            font-size: 28px;
-            margin-bottom: 10px;
-        }
-
-        .fake-ad p {
-            font-size: 16px;
-            margin-bottom: 15px;
-        }
-
-        .fake-ad button {
-            background-color: white;
-            border: none;
-            color: #ff5e62;
-            padding: 8px 18px;
-            border-radius: 20px;
-            font-weight: bold;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .fake-ad button:hover {
-            transform: scale(1.05);
-            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
-        }
-
         /* Show animation for popup */
         .popup-overlay.show {
             opacity: 1;
@@ -481,31 +426,9 @@
             }
         ];
         
-        // Fake ad content for testing
-        const fakeAdContent = [
-            {
-                title: "Special Offer!",
-                text: "Get 50% off on premium cosplay photos",
-                buttonText: "Click Here",
-                colorClass: "color-1"
-            },
-            {
-                title: "Exclusive Content",
-                text: "Access our VIP cosplay collection today",
-                buttonText: "View Now",
-                colorClass: "color-2"
-            },
-            {
-                title: "Limited Time",
-                text: "Early access to upcoming cosplay shoots",
-                buttonText: "Join Now",
-                colorClass: "color-3"
-            }
-        ];
-        
         // Initial load and lazy loading variables
         const initialLoad = 25;
-        const loadMoreCount = 45;
+        const loadMoreCount = 35;
         let currentlyLoaded = 0;
         let allImages = [];
         let isLoading = false;
@@ -528,7 +451,7 @@
             try {
                 const directoryPath = '../assets/images/cosplay/';
                 const images = [];
-                const totalToCheck = 350; // Total Check Images
+                const totalToCheck = 360; // Total Check Images
                 
                 console.log("Checking for existing images...");
                 
@@ -609,36 +532,12 @@
             loadMoreCounter++;
             
             // Show ads at specific load more counts
-            if (loadMoreCounter === 3 || loadMoreCounter === 5 || loadMoreCounter === 9) {
+            if (loadMoreCounter === 4 || loadMoreCounter === 7 || loadMoreCounter === 10) {
                 showAdPopup();
             }
             
             loadingSpinner.style.display = 'none';
             isLoading = false;
-        }
-        
-        // Function to create a fake ad element
-        function createFakeAd(adData) {
-            const fakeAd = document.createElement('div');
-            fakeAd.className = `fake-ad ${adData.colorClass}`;
-            
-            const title = document.createElement('h3');
-            title.textContent = adData.title;
-            
-            const text = document.createElement('p');
-            text.textContent = adData.text;
-            
-            const button = document.createElement('button');
-            button.textContent = adData.buttonText;
-            
-            fakeAd.appendChild(title);
-            fakeAd.appendChild(text);
-            fakeAd.appendChild(button);
-            
-            // Add click event to close popup
-            fakeAd.addEventListener('click', closePopupAfterAdClick);
-            
-            return fakeAd;
         }
         
         // Function to try loading a real ad
@@ -658,41 +557,11 @@
                 script.type = 'text/javascript';
                 script.src = `//snailthreatenedinvited.com/${adCode.key}/invoke.js`;
                 
-                // Add load/error handlers
-                let adLoaded = false;
-                
-                script.onload = function() {
-                    // Mark that the script loaded (not necessarily the ad)
-                    setTimeout(() => {
-                        // If no iframe appeared after a short delay, show fallback
-                        if (!container.querySelector('iframe')) {
-                            showFallbackAd(container);
-                        }
-                    }, 1000);
-                };
-                
-                script.onerror = function() {
-                    showFallbackAd(container);
-                };
-                
-                // Append the script to body (as required by most ad networks)
-                document.body.appendChild(script);
+                container.appendChild(script);
                 
             } catch (e) {
                 console.error('Error loading ad script:', e);
-                showFallbackAd(container);
             }
-        }
-        
-        // Function to show fallback ad
-        function showFallbackAd(container) {
-            // Get a random fake ad
-            const randomAdIndex = Math.floor(Math.random() * fakeAdContent.length);
-            const fakeAd = createFakeAd(fakeAdContent[randomAdIndex]);
-            
-            // Clear container and add the fake ad
-            container.innerHTML = '';
-            container.appendChild(fakeAd);
         }
         
         // Function to prepare and display ads in the popup
@@ -706,7 +575,6 @@
             
             // Shuffle the ad codes
             const shuffledAdCodes = shuffleArray([...adCodes]);
-            const shuffledFakeAds = shuffleArray([...fakeAdContent]);
             
             // Create containers for each ad
             for (let i = 0; i < numAds; i++) {
@@ -714,23 +582,9 @@
                 adContainer.className = 'ad-container';
                 adsContainer.appendChild(adContainer);
                 
-                // For mobile, randomly decide whether to show real or fake ad
-                if (isMobile && Math.random() < 0.5) {
-                    // Show fake ad
-                    const fakeAdIdx = i % shuffledFakeAds.length;
-                    adContainer.appendChild(createFakeAd(shuffledFakeAds[fakeAdIdx]));
-                } else {
-                    // Try to load real ad
-                    const adCodeIdx = i % shuffledAdCodes.length;
-                    tryLoadRealAd(shuffledAdCodes[adCodeIdx], adContainer);
-                    
-                    // Add fallback in case real ad fails
-                    setTimeout(() => {
-                        if (adContainer.children.length === 0) {
-                            showFallbackAd(adContainer);
-                        }
-                    }, 2000);
-                }
+                // Load ad
+                const adCodeIdx = i % shuffledAdCodes.length;
+                tryLoadRealAd(shuffledAdCodes[adCodeIdx], adContainer);
             }
         }
         
@@ -745,11 +599,14 @@
         }
         
         // Function to close popup after ad click
-        function closePopupAfterAdClick() {
-            adPopup.classList.remove('show');
-            setTimeout(() => {
-                adPopup.style.display = 'none';
-            }, 500);
+        function closePopupAfterAdClick(e) {
+            // Only close if the click is inside an ad container
+            if (e.target.closest('.ad-container')) {
+                adPopup.classList.remove('show');
+                setTimeout(() => {
+                    adPopup.style.display = 'none';
+                }, 500);
+            }
         }
         
         // Initialize the gallery
@@ -780,7 +637,7 @@
         document.addEventListener('click', function(e) {
             // Check if the click is on an iframe within an ad container
             if (e.target.tagName === 'IFRAME' && e.target.closest('.ad-container')) {
-                closePopupAfterAdClick();
+                closePopupAfterAdClick(e);
                 return false;
             }
         }, true);  // Use capture phase to detect clicks inside iframes
@@ -788,6 +645,14 @@
         // Detect all ad container clicks to close popup
         document.querySelectorAll('.ad-container').forEach(container => {
             container.addEventListener('click', closePopupAfterAdClick, true);
+        });
+        
+        // Prevent clicks outside ad containers from closing the popup
+        document.querySelector('.popup-container').addEventListener('click', function(e) {
+            // Stop propagation only if click is not inside an ad container
+            if (!e.target.closest('.ad-container')) {
+                e.stopPropagation();
+            }
         });
         
         // Lazy load on scroll
@@ -872,6 +737,14 @@
             // Add event listeners dynamically after DOM is loaded
             document.querySelectorAll('.ad-container').forEach(container => {
                 container.addEventListener('click', closePopupAfterAdClick, true);
+            });
+            
+            // Prevent clicks on the popup overlay from closing it
+            document.getElementById('adPopup').addEventListener('click', function(e) {
+                // If clicking directly on the overlay (not its children)
+                if (e.target === this) {
+                    e.stopPropagation();
+                }
             });
         });
     </script>
