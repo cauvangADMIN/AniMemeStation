@@ -724,30 +724,30 @@
             const batchSize = 15; // Number of images to load per batch
             let isLoading = false; // Flag to prevent multiple loads
             
-            // Ad configuration
-            const adConfigs = [
-                {
-                    key: '232b712b4f3926add741ef3dacfa845b',
-                    format: 'iframe',
-                    height: 250,
-                    width: 300,
-                    params: {}
-                },
-                {
-                    key: '0e30a5fb7feed2a39cc356e389549986',
-                    format: 'iframe',
-                    height: 250,
-                    width: 300,
-                    params: {}
-                },
-                {
-                    key: '7c7b5884fcb9c78838bb6fbb2e72739f',
-                    format: 'iframe',
-                    height: 250,
-                    width: 300,
-                    params: {}
-                }
-            ];
+            // Initialize adConfigs with your ad information
+			const adConfigs = [
+				{
+					key: '232b712b4f3926add741ef3dacfa845b',
+					format: 'iframe',
+					height: 250,
+					width: 300,
+					params: {}
+				},
+				{
+					key: '0e30a5fb7feed2a39cc356e389549986',
+					format: 'iframe',
+					height: 250,
+					width: 300,
+					params: {}
+				},
+				{
+					key: '7c7b5884fcb9c78838bb6fbb2e72739f',
+					format: 'iframe',
+					height: 250,
+					width: 300,
+					params: {}
+				}
+			];
             
             // Add event listener for cosplay button
             aiButton.addEventListener('click', function() {
@@ -759,7 +759,7 @@
                 return window.innerWidth <= 830;
             }
             
-			// Function to show ad popup with fixed implementation
+			// Function to show ad popup with actual ad scripts
 			function showAdPopup() {
 				// Clear previous ads
 				adsContainer.innerHTML = '';
@@ -785,38 +785,43 @@
 					adContainer.id = `ad-container-${index}`;
 					adWrapper.appendChild(adContainer);
 					
-					// Create a transparent overlay to detect clicks
-					const clickOverlay = document.createElement('div');
-					clickOverlay.style.position = 'absolute';
-					clickOverlay.style.top = '0';
-					clickOverlay.style.left = '0';
-					clickOverlay.style.width = '100%';
-					clickOverlay.style.height = '100%';
-					clickOverlay.style.zIndex = '10';
-					clickOverlay.style.cursor = 'pointer';
-					
-					// When overlay is clicked, close the popup
-					clickOverlay.addEventListener('click', closePopupAfterAdClick);
-					adContainer.appendChild(clickOverlay);
-					
 					// Create a container for the ad content
 					const adContent = document.createElement('div');
+					adContent.id = `ad-content-${index}`;
 					adContent.style.width = '100%';
 					adContent.style.height = '100%';
-					adContent.style.backgroundColor = '#f0f0f0';
-					adContent.style.display = 'flex';
-					adContent.style.justifyContent = 'center';
-					adContent.style.alignItems = 'center';
-					
-					// Add placeholder text and styling for the ad
-					adContent.innerHTML = `
-						<div style="text-align: center; padding: 10px;">
-							<div style="font-weight: bold; margin-bottom: 5px; color: #444;">Advertisement</div>
-							<div style="font-size: 14px; color: #666;">Click to continue</div>
-						</div>
-					`;
-					
 					adContainer.appendChild(adContent);
+					
+					// Insert the actual ad script
+					const script1 = document.createElement('script');
+					script1.type = 'text/javascript';
+					script1.text = `
+						atOptions = {
+							'key' : '${adConfig.key}',
+							'format' : '${adConfig.format}',
+							'height' : ${adConfig.height},
+							'width' : ${adConfig.width},
+							'params' : {}
+						};
+					`;
+					adContent.appendChild(script1);
+					
+					const script2 = document.createElement('script');
+					script2.type = 'text/javascript';
+					script2.src = `//snailthreatenedinvited.com/${adConfig.key}/invoke.js`;
+					adContent.appendChild(script2);
+					
+					// Add event listener to detect clicks on the iframe
+					// We need to wait for the iframe to be created by the ad script
+					setTimeout(() => {
+						const iframe = adContainer.querySelector('iframe');
+						if (iframe) {
+							iframe.style.zIndex = '10';
+							iframe.addEventListener('load', function() {
+								iframe.contentWindow.document.body.addEventListener('click', closePopupAfterAdClick);
+							});
+						}
+					}, 1000);
 				});
 				
 				// Show popup
@@ -829,29 +834,30 @@
             // Track how many times the popup has been closed
             let popupCloseCount = 0;
             
-            // Function to close popup after ad click
-            function closePopupAfterAdClick() {
-                adPopup.classList.remove('show');
-                setTimeout(() => {
-                    adPopup.style.display = 'none';
-                    
-                    // Increment the close count
-                    popupCloseCount++;
-                    
-                    // Set timeout for next popup display
-                    if (popupCloseCount === 1) {
-                        // Show popup again after 1 minutes if it's the first close
-                        setTimeout(() => {
-                            showAdPopup();
-                        }, 1 * 60 * 1000); // 1 minutes in milliseconds
-                    } else if (popupCloseCount === 2) {
-                        // Show popup again after 2 minutes if it's the second close
-                        setTimeout(() => {
-                            showAdPopup();
-                        }, 2 * 60 * 1000); // 2 minutes in milliseconds
-                    }
-                }, 500);
-            }
+           // Function to close popup after ad click
+			function closePopupAfterAdClick() {
+				adPopup.classList.remove('show');
+				setTimeout(() => {
+					adPopup.style.display = 'none';
+					
+					// Increment the close count
+					popupCloseCount++;
+					
+					// Set timeout for next popup display
+					if (popupCloseCount === 1) {
+						// Show popup again after 1 minutes if it's the first close
+						setTimeout(() => {
+							showAdPopup();
+						}, 1 * 60 * 1000); // 1 minute in milliseconds
+					} else if (popupCloseCount === 2) {
+						// Show popup again after 2 minutes if it's the second close
+						setTimeout(() => {
+							showAdPopup();
+						}, 2 * 60 * 1000); // 2 minutes in milliseconds
+					}
+				}, 500);
+			}
+
             
             // Function to fetch all available image paths
             async function fetchAllImagePaths() {
