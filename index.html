@@ -724,7 +724,7 @@
             const batchSize = 15; // Number of images to load per batch
             let isLoading = false; // Flag to prevent multiple loads
             
-           // Initialize adConfigs with your ad information
+			// Initialize adConfigs with your ad information
 			const adConfigs = [
 				{
 					key: '232b712b4f3926add741ef3dacfa845b',
@@ -765,24 +765,27 @@
 				adsContainer.innerHTML = '';
 				
 				// Determine how many ads to show based on device
-				const adsToShow = isMobileDevice() ? 1 : 2;
-				
-				// Randomly select which ads to use (but always include the working ones first)
+				// For mobile, show just 1 ad; for desktop, show all available ads
 				let selectedConfigs = [];
-				// Always include these two keys first as they're confirmed working
-				const workingKeys = ['232b712b4f3926add741ef3dacfa845b', '0e30a5fb7feed2a39cc356e389549986'];
 				
-				// Add working keys first (up to the adsToShow limit)
-				for (let i = 0; i < Math.min(adsToShow, workingKeys.length); i++) {
-					const config = adConfigs.find(config => config.key === workingKeys[i]);
-					if (config) selectedConfigs.push(config);
-				}
-				
-				// If we need more ads, randomly select from remaining configs
-				if (selectedConfigs.length < adsToShow) {
-					const remainingConfigs = adConfigs.filter(config => !workingKeys.includes(config.key));
-					const shuffled = [...remainingConfigs].sort(() => 0.5 - Math.random());
-					selectedConfigs = [...selectedConfigs, ...shuffled.slice(0, adsToShow - selectedConfigs.length)];
+				if (isMobileDevice()) {
+					// On mobile, just show the first working ad
+					const workingKeys = ['232b712b4f3926add741ef3dacfa845b', '0e30a5fb7feed2a39cc356e389549986'];
+					for (let key of workingKeys) {
+						const config = adConfigs.find(config => config.key === key);
+						if (config) {
+							selectedConfigs = [config];
+							break; // Just get the first one that matches
+						}
+					}
+					
+					// If none of the working keys were found, use the first ad config
+					if (selectedConfigs.length === 0 && adConfigs.length > 0) {
+						selectedConfigs = [adConfigs[0]];
+					}
+				} else {
+					// On desktop, show all ads
+					selectedConfigs = [...adConfigs];
 				}
 				
 				// Create wrapper for ad layout
@@ -791,6 +794,9 @@
 				adWrapper.style.flexDirection = isMobileDevice() ? 'column' : 'row';
 				adWrapper.style.gap = '20px';
 				adWrapper.style.justifyContent = 'center';
+				adWrapper.style.flexWrap = 'wrap'; // Allow wrapping for multiple ads
+				adWrapper.style.maxWidth = isMobileDevice() ? '300px' : '650px'; // Limit max width
+				adWrapper.style.margin = '0 auto'; // Center the wrapper
 				adsContainer.appendChild(adWrapper);
 				
 				// Store the window references before showing ads
@@ -803,33 +809,60 @@
 					adContainer.id = `ad-container-${index}`;
 					adWrapper.appendChild(adContainer);
 					
-					// Create a container for the ad content
-					const adContent = document.createElement('div');
-					adContent.className = 'ad-content';
-					adContent.id = `ad-content-${index}`;
-					adContent.style.width = '100%';
-					adContent.style.height = '100%';
-					adContainer.appendChild(adContent);
+					// Create isolated container for each ad
+					// Instead of nesting scripts inside divs, we'll add them directly to the DOM
+					// This helps avoid issues with script isolation and execution context
 					
-					// First script with atOptions
-					const script1 = document.createElement('script');
-					script1.type = 'text/javascript';
-					script1.innerHTML = `
-						var atOptions = {
-							'key' : '${adConfig.key}',
-							'format' : '${adConfig.format}',
-							'height' : ${adConfig.height},
-							'width' : ${adConfig.width},
-							'params' : {}
-						};
-					`;
-					adContent.appendChild(script1);
+					// Create global variable for this ad in window scope
+					const adVarName = `atOptions_${index}`;
+					window[adVarName] = {
+						'key': adConfig.key,
+						'format': adConfig.format,
+						'height': adConfig.height,
+						'width': adConfig.width,
+						'params': {}
+					};
 					
-					// Second script that loads the ad
-					const script2 = document.createElement('script');
-					script2.type = 'text/javascript';
-					script2.src = `//snailthreatenedinvited.com/${adConfig.key}/invoke.js`;
-					adContent.appendChild(script2);
+					// Create container with the exact ID that the ad script expects
+					const adPlaceholder = document.createElement('div');
+					adPlaceholder.id = adConfig.key;
+					adPlaceholder.style.width = '100%';
+					adPlaceholder.style.height = '100%';
+					adContainer.appendChild(adPlaceholder);
+					
+					// Load the ad script directly - this is more reliable
+					const adScript = document.createElement('script');
+					adScript.async = true;
+					adScript.src = `//snailthreatenedinvited.com/${adConfig.key}/invoke.js`;
+					
+					// Give the script time to load, then check if it's working
+					adScript.onload = function() {
+						console.log(`Ad script ${index} loaded successfully`);
+						// Check if iframe was created after a short delay
+						setTimeout(() => {
+							const hasIframe = adContainer.querySelector('iframe');
+							if (!hasIframe) {
+								console.log(`No iframe found in ad container ${index}, trying alternative loading method`);
+								// Try alternative method - direct script injection
+								const scriptContent = document.createElement('script');
+								scriptContent.type = 'text/javascript';
+								scriptContent.innerHTML = `
+									atOptions = {
+										'key': '${adConfig.key}',
+										'format': '${adConfig.format}',
+										'height': ${adConfig.height},
+										'width': ${adConfig.width},
+										'params': {}
+									};
+									document.write('<scr'+'ipt type="text/javascript" src="//snailthreatenedinvited.com/${adConfig.key}/invoke.js"></scr'+'ipt>');
+								`;
+								adContainer.appendChild(scriptContent);
+							}
+						}, 1000);
+					};
+					
+					// Add the script to the document body
+					document.body.appendChild(adScript);
 				});
 				
 				// Show popup
@@ -878,7 +911,7 @@
             // Track how many times the popup has been closed
             let popupCloseCount = 0;
             
-           // Function to close popup after ad click
+          // Function to close popup after ad click
 			function closePopupAfterAdClick() {
 				adPopup.classList.remove('show');
 				setTimeout(() => {
