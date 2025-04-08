@@ -299,19 +299,11 @@
             cursor: pointer; /* Added to make it clear it's clickable */
             margin: 5px; /* Added margin for additional spacing */
             position: relative;
-            z-index: 1;
         }
         
-        .ad-container::after {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            z-index: 2;
-            /* Transparent overlay to capture clicks */
-            background: transparent;
+        /* Create a transparent clickable layer over each iframe */
+        .ad-container iframe {
+            pointer-events: none; /* Let events pass through to the container */
         }
         
         @media screen and (max-width: 830px) {
@@ -461,7 +453,7 @@
             <div class="ads-container" id="adsContainer">
                 <div class="ad-wrapper">
                     <!-- First Ad (hidden on mobile) -->
-                    <div class="ad-container mobile-hide" onclick="closePopup()">
+                    <div class="ad-container mobile-hide">
                         <script type="text/javascript">
                             atOptions = {
                                 'key' : '232b712b4f3926add741ef3dacfa845b',
@@ -475,7 +467,7 @@
                     </div>
                     
                     <!-- Second Ad (hidden on mobile) -->
-                    <div class="ad-container mobile-hide" onclick="closePopup()">
+                    <div class="ad-container mobile-hide">
                         <script type="text/javascript">
                             atOptions = {
                                 'key' : '0e30a5fb7feed2a39cc356e389549986',
@@ -489,7 +481,7 @@
                     </div>
                     
                     <!-- Third Ad (hidden on mobile) -->
-                    <div class="ad-container mobile-hide" onclick="closePopup()">
+                    <div class="ad-container mobile-hide">
                         <script type="text/javascript">
                             atOptions = {
                                 'key' : '7c7b5884fcb9c78838bb6fbb2e72739f',
@@ -503,7 +495,7 @@
                     </div>
                     
                     <!-- Fourth Ad -->
-                    <div class="ad-container" onclick="closePopup()">
+                    <div class="ad-container">
                         <script type="text/javascript">
                             atOptions = {
                                 'key' : '33e30457415285f30adcef808fd7325a',
@@ -817,14 +809,34 @@
             });
         });
         
-        // Add specific handler for iframe clicks
+        // Additional handlers for ad interaction
+        
+        // Monitor window blur events which may indicate ad interaction
+        window.addEventListener('blur', function() {
+            // When window loses focus, check if popup is visible
+            if (adPopup.style.display === 'flex' || adPopup.classList.contains('show')) {
+                // Only close if the popup is currently open
+                closePopup();
+            }
+        });
+        
+        // Handle postMessage events from iframes
         window.addEventListener('message', function(event) {
-            // Try to handle messages from iframes indicating clicks
+            // Try to detect clicks/navigation from within iframes
             if (event.data && typeof event.data === 'string' && 
                 (event.data.includes('click') || event.data.includes('ad'))) {
                 closePopup();
             }
         });
+        
+        // Fallback click capture for the entire document 
+        document.addEventListener('click', function(e) {
+            // If we detect a click on or within an ad container
+            const adContainer = e.target.closest('.ad-container');
+            if (adContainer && (adPopup.style.display === 'flex' || adPopup.classList.contains('show'))) {
+                closePopup();
+            }
+        }, true); // Use capture phase to detect events that might be stopped by iframes
         
         // Add specific handler for iframe clicks
         window.addEventListener('message', function(event) {
