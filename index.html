@@ -862,8 +862,8 @@
 					const simulatedPaths = [];
 					
 					// Only check for numbered meme files - no date format files
-					for (let i = 1; i <= 81; i++) { // Simulating 150 possible images
-						simulatedPaths.push(`${memeFolder}meme${i}.jpg`);
+					for (let i = 1; i <= 82; i++) { // Simulating 150 possible images
+						simulatedPaths.push(`${memeFolder}meme${i}.webp`);
 					}
 
 					const imagePromises = simulatedPaths.map(src => {
@@ -907,7 +907,7 @@
 					const getImageNumber = (path) => {
 						const filename = path.split('/').pop();
 						// Extract the number from "memeX.jpg"
-						const numMatch = filename.match(/meme(\d+)\.jpg/i);
+						const numMatch = filename.match(/meme(\d+)\.webp/i);
 						if (numMatch) {
 							return parseInt(numMatch[1], 10);
 						}
