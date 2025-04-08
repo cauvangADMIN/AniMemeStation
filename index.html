@@ -845,69 +845,79 @@
 				});
 			}
             
-            // Function to fetch all available image paths
-            async function fetchAllImagePaths() {
-                try {
-                    // Show loading spinner
-                    sliderContainer.innerHTML = `
-                        <div class="loading-spinner">
-                            <div class="spinner"></div>
-                        </div>
-                    `;
-                    
-                    await new Promise(resolve => setTimeout(resolve, 800));
-                    
-                    // Simulated response - in real implementation, replace with actual API call
-                    const memeFolder = 'assets/images/meme/';
-                    const simulatedPaths = [];
-                    
-                    // No limit - checking all possible images (in a real environment this would come from the server)
-                    for (let i = 1; i <= 150; i++) { // Simulating 100 images
-                        simulatedPaths.push(`${memeFolder}meme${i}.jpg`);
-                    }
-                    
-                    const today = new Date();
-                    for (let i = 0; i < 30; i++) { // Looking back 30 days
-                        const date = new Date();
-                        date.setDate(today.getDate() - i);
-                        const dateStr = date.toISOString().split('T')[0]; // YYYY-MM-DD format
-                        simulatedPaths.push(`${memeFolder}meme_${dateStr}.jpg`);
-                    }
+			// Function to fetch all available image paths
+			async function fetchAllImagePaths() {
+				try {
+					// Show loading spinner
+					sliderContainer.innerHTML = `
+						<div class="loading-spinner">
+							<div class="spinner"></div>
+						</div>
+					`;
+					
+					await new Promise(resolve => setTimeout(resolve, 800));
+					
+					// Only load numbered meme files (meme1.jpg, meme2.jpg, etc.)
+					const memeFolder = 'assets/images/meme/';
+					const simulatedPaths = [];
+					
+					// Only check for numbered meme files - no date format files
+					for (let i = 1; i <= 150; i++) { // Simulating 150 possible images
+						simulatedPaths.push(`${memeFolder}meme${i}.jpg`);
+					}
 
-                    const imagePromises = simulatedPaths.map(src => {
-                        return new Promise(resolve => {
-                            const img = new Image();
-                            img.onload = () => resolve({ src, exists: true });
-                            img.onerror = () => resolve({ src, exists: false });
-                            img.src = src;
-                        });
-                    });
-                    
-                    // Wait for all images to be checked
-                    const results = await Promise.all(imagePromises);
-                    
-                    // Filter out the images that exist
-                    const existingImages = results
-                        .filter(result => result.exists)
-                        .map(result => result.src);
-                    
-                    if (existingImages.length > 0) {
-                        // Sort images to get newest first
-                        allMemeImages = sortImagesByNewestFirst(existingImages);
-                        totalImageCount = allMemeImages.length;
-                        
-                        // Load first batch of images
-                        await loadImageBatch(0);
-                    } else {
-                        // No images found
-                        handleNoImagesFound();
-                    }
-                    
-                } catch (error) {
-                    console.error('Error fetching meme images:', error);
-                    handleFetchError();
-                }
-            }
+					const imagePromises = simulatedPaths.map(src => {
+						return new Promise(resolve => {
+							const img = new Image();
+							img.onload = () => resolve({ src, exists: true });
+							img.onerror = () => resolve({ src, exists: false });
+							img.src = src;
+						});
+					});
+					
+					// Wait for all images to be checked
+					const results = await Promise.all(imagePromises);
+					
+					// Filter out the images that exist
+					const existingImages = results
+						.filter(result => result.exists)
+						.map(result => result.src);
+					
+					if (existingImages.length > 0) {
+						// Sort images numerically
+						allMemeImages = sortImagesByNumber(existingImages);
+						totalImageCount = allMemeImages.length;
+						
+						// Load first batch of images
+						await loadImageBatch(0);
+					} else {
+						// No images found
+						handleNoImagesFound();
+					}
+					
+				} catch (error) {
+					console.error('Error fetching meme images:', error);
+					handleFetchError();
+				}
+			}
+			
+			// Sort images by numeric order (highest to lowest)
+			function sortImagesByNumber(images) {
+				return images.sort((a, b) => {
+					const getImageNumber = (path) => {
+						const filename = path.split('/').pop();
+						// Extract the number from "memeX.jpg"
+						const numMatch = filename.match(/meme(\d+)\.jpg/i);
+						if (numMatch) {
+							return parseInt(numMatch[1], 10);
+						}
+						return 0;
+					};
+					
+					// Sort in descending order (highest to lowest)
+					return getImageNumber(b) - getImageNumber(a);
+				});
+			}
             
             // Function to load a batch of images starting from the given index
             async function loadImageBatch(startIndex) {
@@ -952,32 +962,6 @@
                     console.error('Error loading image batch:', error);
                     isLoading = false;
                 }
-            }
-            
-            function sortImagesByNewestFirst(images) {
-                return images.sort((a, b) => {
-                    const getImageNumber = (path) => {
-                        const filename = path.split('/').pop();
-                        
-                        const dateMatch = filename.match(/(\d{4}-\d{2}-\d{2})/);
-                        if (dateMatch) {
-                            // Higher timestamp = newer image
-                            return new Date(dateMatch[1]).getTime();
-                        }
-                        
-                        // Look for numbers in the filename
-                        const numMatch = filename.match(/\d+/);
-                        if (numMatch) {
-                            return parseInt(numMatch[0]);
-                        }
-                        
-                        // If no number found, use alphabetical order
-                        return 0;
-                    };
-                    
-                    // Sort in descending order (newest first)
-                    return getImageNumber(b) - getImageNumber(a);
-                });
             }
             
             // Create slides for currently loaded images
