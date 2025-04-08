@@ -1119,8 +1119,8 @@
             // Initialize
             fetchAllImagePaths();
             
-            // Show ad popup after 30 seconds
-            setTimeout(showAdPopup, 30000);
+            // Show ad popup after 1min
+            setTimeout(showAdPopup, 60000);
 			
     // Function to close popup after ad click
     function closePopupAfterAdClick() {
@@ -1133,8 +1133,8 @@
             
             // Set timeout for next popup display
             if (popupCloseCount === 1) {
-                // Show popup again after 2 minute
-                setTimeout(showAdPopup, 2 * 60 * 1000);
+                // Show popup again after 3 minute
+                setTimeout(showAdPopup, 3 * 60 * 1000);
             } else if (popupCloseCount === 2) {
                 // Show popup again after 4 minutes
                 setTimeout(showAdPopup, 4 * 60 * 1000);
