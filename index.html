@@ -794,7 +794,7 @@
             let allMemeImages = []; // All images paths
             let loadedMemeImages = []; // Currently loaded images
             let totalImageCount = 0; // Total count of all available images
-            const batchSize = 15; // Number of images to load per batch
+            const batchSize = 25; // Number of images to load per batch
             let isLoading = false; // Flag to prevent multiple loads
             
             
@@ -862,7 +862,7 @@
 					const simulatedPaths = [];
 					
 					// Only check for numbered meme files - no date format files
-					for (let i = 1; i <= 150; i++) { // Simulating 150 possible images
+					for (let i = 1; i <= 81; i++) { // Simulating 150 possible images
 						simulatedPaths.push(`${memeFolder}meme${i}.jpg`);
 					}
 
