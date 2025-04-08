@@ -296,14 +296,9 @@
             background-color: #f0f0f0;
             border: 1px solid #ddd;
             overflow: hidden;
-            cursor: pointer; /* Added to make it clear it's clickable */
-            margin: 5px; /* Added margin for additional spacing */
+            cursor: pointer;
+            margin: 5px;
             position: relative;
-        }
-        
-        /* Create a transparent clickable layer over each iframe */
-        .ad-container iframe {
-            pointer-events: none; /* Let events pass through to the container */
         }
         
         @media screen and (max-width: 830px) {
@@ -783,7 +778,7 @@
             // Load initial batch
             loadImages(initialLoad);
             
-            // Show popup after page has fully loaded and content is visible (5 seconds)
+            // Show popup after 5 seconds
             setTimeout(showAdPopup, 5000);
         }
         
@@ -807,36 +802,45 @@
                     e.stopPropagation();
                 }
             });
+            
+            // Handle the case where an ad creates an anchor link when clicked
+            document.body.addEventListener('mousedown', function(e) {
+                // Store which element was clicked
+                window.lastClickedElement = e.target;
+            });
+            
+            // When a link/anchor click happens, check if it was inside an ad container
+            document.body.addEventListener('click', function(e) {
+                if (e.target.tagName === 'A' || e.target.closest('a')) {
+                    // If this link is inside an ad container, close the popup
+                    if (window.lastClickedElement && window.lastClickedElement.closest('.ad-container')) {
+                        closePopup();
+                    }
+                }
+            }, true);
         });
         
         // Additional handlers for ad interaction
-        
-        // Monitor window blur events which may indicate ad interaction
-        window.addEventListener('blur', function() {
-            // When window loses focus, check if popup is visible
-            if (adPopup.style.display === 'flex' || adPopup.classList.contains('show')) {
-                // Only close if the popup is currently open
-                closePopup();
-            }
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize gallery after DOM is loaded
+            initGallery();
+            
+            // Set up click handlers for popup
+            adPopup.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closePopup();
+                }
+            });
+            
+            // Prevent clicks on the popup container from closing it
+            // unless they're on an ad container
+            const popupContainer = document.querySelector('.popup-container');
+            popupContainer.addEventListener('click', function(e) {
+                if (!e.target.closest('.ad-container')) {
+                    e.stopPropagation();
+                }
+            });
         });
-        
-        // Handle postMessage events from iframes
-        window.addEventListener('message', function(event) {
-            // Try to detect clicks/navigation from within iframes
-            if (event.data && typeof event.data === 'string' && 
-                (event.data.includes('click') || event.data.includes('ad'))) {
-                closePopup();
-            }
-        });
-        
-        // Fallback click capture for the entire document 
-        document.addEventListener('click', function(e) {
-            // If we detect a click on or within an ad container
-            const adContainer = e.target.closest('.ad-container');
-            if (adContainer && (adPopup.style.display === 'flex' || adPopup.classList.contains('show'))) {
-                closePopup();
-            }
-        }, true); // Use capture phase to detect events that might be stopped by iframes
         
         // Add specific handler for iframe clicks
         window.addEventListener('message', function(event) {
