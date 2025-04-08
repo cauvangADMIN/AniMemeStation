@@ -201,6 +201,37 @@
             to { transform: rotate(360deg); }
         }
         
+        /* Skeleton loading styles */
+        .skeleton-container {
+            display: none;
+            width: 100%;
+        }
+        
+        .skeleton-grid {
+            column-count: 4;
+            column-gap: 20px;
+            width: 100%;
+        }
+        
+        .skeleton-item {
+            break-inside: avoid;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+        
+        @keyframes shimmer {
+            0% {
+                background-position: -200% 0;
+            }
+            100% {
+                background-position: 200% 0;
+            }
+        }
+        
         /* Ad Popup Styles */
         .popup-overlay {
             position: fixed;
@@ -244,20 +275,39 @@
 
         .ads-container {
             display: flex;
-            flex-direction: row;
+            flex-direction: column;
             justify-content: center;
-            gap: 20px;
             margin-bottom: 15px;
+            width: 100%;
+        }
+        
+        .ad-wrapper {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px; /* Reduced gap between ads */
+            width: 100%;
+            padding: 0 5px; /* Added padding for spacing from edges */
         }
 
         .ad-container {
             width: 300px;
             height: 250px;
-            margin: 0 auto 15px;
             background-color: #f0f0f0;
             border: 1px solid #ddd;
             overflow: hidden;
             cursor: pointer; /* Added to make it clear it's clickable */
+            margin: 5px; /* Added margin for additional spacing */
+        }
+        
+        @media screen and (max-width: 830px) {
+            .mobile-hide {
+                display: none;
+            }
+            
+            .ad-container {
+                margin: 8px auto; /* Center the single visible ad on mobile */
+            }
         }
 
         /* Show animation for popup */
@@ -272,7 +322,7 @@
         
         /* Responsive styles */
         @media screen and (max-width: 1200px) {
-            .masonry-grid {
+            .masonry-grid, .skeleton-grid {
                 column-count: 3;
             }
         }
@@ -296,7 +346,7 @@
                 margin-bottom: 25px;
             }
             
-            .masonry-grid {
+            .masonry-grid, .skeleton-grid {
                 column-count: 2;
             }
 
@@ -332,12 +382,12 @@
                 margin-bottom: 20px;
             }
             
-            .masonry-grid {
+            .masonry-grid, .skeleton-grid {
                 column-count: 2;
                 column-gap: 10px;
             }
             
-            .masonry-item {
+            .masonry-item, .skeleton-item {
                 margin-bottom: 10px;
             }
             
@@ -371,6 +421,13 @@
                 <!-- Images will be loaded here via JavaScript -->
             </div>
             
+            <!-- Skeleton loading container -->
+            <div class="skeleton-container" id="skeletonContainer">
+                <div class="skeleton-grid" id="skeletonGrid">
+                    <!-- Skeleton items will be added here -->
+                </div>
+            </div>
+            
             <div class="loading-spinner" id="loadingSpinner"></div>
             <div class="load-more-text" id="loadMoreText">Hết rồi ! Nhưng sẽ cập nhật thêm sớm thôi</div>
         </div>
@@ -388,7 +445,63 @@
         <div class="popup-container">
             <div class="popup-title">Nhấn vào quảng cáo<br>bất kỳ để đóng cửa sổ này !!</div>
             <div class="ads-container" id="adsContainer">
-                <!-- Ads will be inserted here -->
+                <div class="ad-wrapper">
+                    <!-- First Ad (hidden on mobile) -->
+                    <div class="ad-container mobile-hide">
+                        <script type="text/javascript">
+                            atOptions = {
+                                'key' : '232b712b4f3926add741ef3dacfa845b',
+                                'format' : 'iframe',
+                                'height' : 250,
+                                'width' : 300,
+                                'params' : {}
+                            };
+                            document.write('<scr' + 'ipt type="text/javascript" src="//snailthreatenedinvited.com/232b712b4f3926add741ef3dacfa845b/invoke.js"></scr' + 'ipt>');
+                        </script>
+                    </div>
+                    
+                    <!-- Second Ad (hidden on mobile) -->
+                    <div class="ad-container mobile-hide">
+                        <script type="text/javascript">
+                            atOptions = {
+                                'key' : '0e30a5fb7feed2a39cc356e389549986',
+                                'format' : 'iframe',
+                                'height' : 250,
+                                'width' : 300,
+                                'params' : {}
+                            };
+                            document.write('<scr' + 'ipt type="text/javascript" src="//snailthreatenedinvited.com/0e30a5fb7feed2a39cc356e389549986/invoke.js"></scr' + 'ipt>');
+                        </script>
+                    </div>
+                    
+                    <!-- Third Ad (hidden on mobile) -->
+                    <div class="ad-container mobile-hide">
+                        <script type="text/javascript">
+                            atOptions = {
+                                'key' : '7c7b5884fcb9c78838bb6fbb2e72739f',
+                                'format' : 'iframe',
+                                'height' : 250,
+                                'width' : 300,
+                                'params' : {}
+                            };
+                            document.write('<scr' + 'ipt type="text/javascript" src="//snailthreatenedinvited.com/7c7b5884fcb9c78838bb6fbb2e72739f/invoke.js"></scr' + 'ipt>');
+                        </script>
+                    </div>
+                    
+                    <!-- Fourth Ad -->
+                    <div class="ad-container">
+                        <script type="text/javascript">
+                            atOptions = {
+                                'key' : '33e30457415285f30adcef808fd7325a',
+                                'format' : 'iframe',
+                                'height' : 250,
+                                'width' : 300,
+                                'params' : {}
+                            };
+                            document.write('<scr' + 'ipt type="text/javascript" src="//snailthreatenedinvited.com/33e30457415285f30adcef808fd7325a/invoke.js"></scr' + 'ipt>');
+                        </script>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -400,32 +513,21 @@
         const loadingSpinner = document.getElementById('loadingSpinner');
         const backToTopBtn = document.getElementById('backToTop');
         const adPopup = document.getElementById('adPopup');
-        const adsContainer = document.getElementById('adsContainer');
+        const skeletonContainer = document.getElementById('skeletonContainer');
+        const skeletonGrid = document.getElementById('skeletonGrid');
         
-        // Define ad codes for easy updating
-        const adCodes = [
-            {
-                key: '232b712b4f3926add741ef3dacfa845b',
-                format: 'iframe',
-                height: 250,
-                width: 300,
-                params: {}
-            },
-            {
-                key: '0e30a5fb7feed2a39cc356e389549986',
-                format: 'iframe',
-                height: 250,
-                width: 300,
-                params: {}
-            },
-            {
-                key: '7c7b5884fcb9c78838bb6fbb2e72739f',
-                format: 'iframe',
-                height: 250,
-                width: 300,
-                params: {}
-            }
-        ];
+        // Function to close popup
+        function closePopup() {
+            adPopup.classList.remove('show');
+            setTimeout(() => {
+                adPopup.style.display = 'none';
+                
+                // Optional: clean up ad containers to free memory
+                document.querySelectorAll('.ad-container').forEach(container => {
+                    container.innerHTML = '';
+                });
+            }, 500);
+        }
         
         // Initial load and lazy loading variables
         const initialLoad = 30;
@@ -434,6 +536,31 @@
         let allImages = [];
         let isLoading = false;
         let loadMoreCounter = 0; // Counter for tracking load more operations
+        
+        // Function to generate skeleton loading elements
+        function generateSkeletons(count) {
+            skeletonGrid.innerHTML = ''; // Clear existing skeletons
+            
+            // Create random heights for skeleton items
+            const heights = [180, 200, 220, 240, 260, 280, 300, 320, 340];
+            
+            for (let i = 0; i < count; i++) {
+                const skeletonItem = document.createElement('div');
+                skeletonItem.className = 'skeleton-item';
+                // Set random height for more realistic appearance
+                const randomHeight = heights[Math.floor(Math.random() * heights.length)];
+                skeletonItem.style.height = `${randomHeight}px`;
+                skeletonGrid.appendChild(skeletonItem);
+            }
+            
+            // Show skeleton container
+            skeletonContainer.style.display = 'block';
+        }
+        
+        // Function to hide skeleton loading
+        function hideSkeletons() {
+            skeletonContainer.style.display = 'none';
+        }
         
         // Function to check if an image exists
         function imageExists(url) {
@@ -490,7 +617,13 @@
         function loadImages(count) {
             if (isLoading) return;
             isLoading = true;
-            loadingSpinner.style.display = 'block';
+            
+            // Show skeleton loading instead of spinner
+            loadingSpinner.style.display = 'none';
+            generateSkeletons(count);
+            
+            // Set a minimum loading time for aesthetics (at least 800ms)
+            const loadStartTime = Date.now();
             
             const fragment = document.createDocumentFragment();
             const endIndex = Math.min(currentlyLoaded + count, allImages.length);
@@ -516,116 +649,121 @@
                 fragment.appendChild(item);
             }
             
-            gallery.appendChild(fragment);
-            currentlyLoaded = endIndex;
+            // Ensure skeleton is shown for a minimum time
+            const loadTime = Date.now() - loadStartTime;
+            const minLoadTime = 800; // 800ms minimum loading time
             
-            // Show "No more images" text if all images are loaded
-            if (currentlyLoaded >= allImages.length) {
-                loadMoreText.style.display = 'block';
-            }
-            
-            // Check if any images were displayed
-            if (gallery.children.length === 0 && currentlyLoaded >= allImages.length) {
-                loadMoreText.textContent = 'Không tìm thấy hình ảnh';
-            }
-            
-            // Increment load more counter
-            loadMoreCounter++;
-            
-            // Show ads at specific load more counts
-            if (loadMoreCounter === 4 || loadMoreCounter === 7 || loadMoreCounter === 10) {
-                showAdPopup();
-            }
-            
-            loadingSpinner.style.display = 'none';
-            isLoading = false;
-        }
-        
-        // Function to try loading a real ad
-        function tryLoadRealAd(adCode, container) {
-            try {
-                // Set up window.atOptions
-                window.atOptions = {
-                    'key': adCode.key,
-                    'format': adCode.format,
-                    'height': adCode.height,
-                    'width': adCode.width,
-                    'params': adCode.params
-                };
-                
-                // Create and append the script
-                const script = document.createElement('script');
-                script.type = 'text/javascript';
-                script.src = `//snailthreatenedinvited.com/${adCode.key}/invoke.js`;
-                
-                container.appendChild(script);
-                
-            } catch (e) {
-                console.error('Error loading ad script:', e);
-            }
-        }
-        
-        // Function to close popup
-        function closePopup() {
-            adPopup.classList.remove('show');
             setTimeout(() => {
-                adPopup.style.display = 'none';
-            }, 500);
-        }
-        
-        // Function to prepare and display ads in the popup
-        function prepareAdPopup() {
-            // Clear previous ads
-            adsContainer.innerHTML = '';
-            
-            // Determine how many ads to show based on screen size
-            const isMobile = window.innerWidth <= 830;
-            const numAds = isMobile ? 1 : 2;
-            
-            // Shuffle the ad codes
-            const shuffledAdCodes = shuffleArray([...adCodes]);
-            
-            // Create containers for each ad
-            for (let i = 0; i < numAds; i++) {
-                const adContainer = document.createElement('div');
-                adContainer.className = 'ad-container';
-                adContainer.style.cursor = 'pointer'; // Make sure cursor shows it's clickable
+                // Hide skeleton loading
+                hideSkeletons();
                 
-                // Add click event listener directly to the container
-                adContainer.addEventListener('click', function(e) {
-                    e.stopPropagation(); // Prevent event bubbling
-                    closePopup();
-                });
+                // Append actual images
+                gallery.appendChild(fragment);
+                currentlyLoaded = endIndex;
                 
-                adsContainer.appendChild(adContainer);
+                // Show "No more images" text if all images are loaded
+                if (currentlyLoaded >= allImages.length) {
+                    loadMoreText.style.display = 'block';
+                }
                 
-                // Load ad
-                const adCodeIdx = i % shuffledAdCodes.length;
-                tryLoadRealAd(shuffledAdCodes[adCodeIdx], adContainer);
-            }
+                // Check if any images were displayed
+                if (gallery.children.length === 0 && currentlyLoaded >= allImages.length) {
+                    loadMoreText.textContent = 'Không tìm thấy hình ảnh';
+                }
+                
+                // Increment load more counter
+                loadMoreCounter++;
+                
+                // Show ads at specific load more counts
+                if (loadMoreCounter === 4 || loadMoreCounter === 7 || loadMoreCounter === 10) {
+                    showAdPopup();
+                }
+                
+                isLoading = false;
+            }, Math.max(0, minLoadTime - loadTime));
         }
         
         // Function to show ad popup
         function showAdPopup() {
-            prepareAdPopup();
+            // Load ads dynamically right before showing the popup
+            loadAdsScripts();
             
             adPopup.style.display = 'flex';
             setTimeout(() => {
                 adPopup.classList.add('show');
             }, 10);
             
-            // Add click handlers to ad containers immediately after they're created
+            // Add click handlers to ad containers
             document.querySelectorAll('.ad-container').forEach(container => {
-                container.addEventListener('click', function() {
+                container.addEventListener('click', function(e) {
+                    e.stopPropagation(); // Prevent event bubbling
                     closePopup();
                 });
             });
         }
         
+        // Function to load ad scripts dynamically
+        function loadAdsScripts() {
+            const adScripts = [
+                {
+                    container: 'adContainer1',
+                    key: '232b712b4f3926add741ef3dacfa845b'
+                },
+                {
+                    container: 'adContainer2',
+                    key: '0e30a5fb7feed2a39cc356e389549986'
+                },
+                {
+                    container: 'adContainer3',
+                    key: '7c7b5884fcb9c78838bb6fbb2e72739f'
+                },
+                {
+                    container: 'adContainer4',
+                    key: '33e30457415285f30adcef808fd7325a'
+                }
+            ];
+            
+            adScripts.forEach(ad => {
+                const container = document.getElementById(ad.container);
+                if (!container) return;
+                
+                // Clear container first
+                container.innerHTML = '';
+                
+                // Create script element
+                const script = document.createElement('script');
+                script.type = 'text/javascript';
+                script.innerHTML = `
+                    atOptions = {
+                        'key' : '${ad.key}',
+                        'format' : 'iframe',
+                        'height' : 250,
+                        'width' : 300,
+                        'params' : {}
+                    };
+                `;
+                container.appendChild(script);
+                
+                // Create the second script that loads the ad
+                const adScript = document.createElement('script');
+                adScript.type = 'text/javascript';
+                adScript.src = `//snailthreatenedinvited.com/${ad.key}/invoke.js`;
+                container.appendChild(adScript);
+            });
+        }
+        
+        // Function to show ad popup (already defined above)
+        
         // Initialize the gallery
         async function initGallery() {
+            // Show initial skeleton loading
+            generateSkeletons(initialLoad);
+            
             // Fetch all images
             const images = await fetchImageList();
+            
+            // Hide initial skeleton
+            hideSkeletons();
             
             if (images.length === 0) {
                 loadMoreText.textContent = 'Không tìm thấy hình ảnh';
@@ -639,30 +777,17 @@
             // Load initial batch
             loadImages(initialLoad);
             
-            // Show popup after 4 seconds
-            setTimeout(showAdPopup, 4000);
+            // Show popup after page has fully loaded and content is visible (5 seconds)
+            setTimeout(showAdPopup, 5000);
         }
         
-        // Call the init function
-        initGallery();
-        
-        // Handle document clicks
-        document.addEventListener('click', function(e) {
-            // Check if the click is on an iframe within an ad container
-            const adContainer = e.target.closest('.ad-container');
-            if (adContainer) {
-                closePopup();
-                return;
-            }
-        }, true);  // Use capture phase to detect clicks inside iframes
-        
-        // Update the click handler for the popup overlay
+        // Call the init function to load the gallery
         document.addEventListener('DOMContentLoaded', function() {
-            const popupOverlay = document.getElementById('adPopup');
-            const popupContainer = document.querySelector('.popup-container');
+            // Initialize gallery after DOM is loaded
+            initGallery();
             
-            // Make clicking directly on the overlay close the popup
-            popupOverlay.addEventListener('click', function(e) {
+            // Set up click handlers for popup
+            adPopup.addEventListener('click', function(e) {
                 if (e.target === this) {
                     closePopup();
                 }
@@ -670,11 +795,21 @@
             
             // Prevent clicks on the popup container from closing it
             // unless they're on an ad container
+            const popupContainer = document.querySelector('.popup-container');
             popupContainer.addEventListener('click', function(e) {
                 if (!e.target.closest('.ad-container')) {
                     e.stopPropagation();
                 }
             });
+        });
+        
+        // Add specific handler for iframe clicks
+        window.addEventListener('message', function(event) {
+            // Try to handle messages from iframes indicating clicks
+            if (event.data && typeof event.data === 'string' && 
+                (event.data.includes('click') || event.data.includes('ad'))) {
+                closePopup();
+            }
         });
         
         // Add specific handler for iframe clicks
