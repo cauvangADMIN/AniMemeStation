@@ -299,6 +299,19 @@
             cursor: pointer;
             margin: 5px;
             position: relative;
+            z-index: 1;
+        }
+        
+        .ad-container::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 2;
+            background: transparent;
+            cursor: pointer;
         }
         
         @media screen and (max-width: 830px) {
@@ -448,7 +461,7 @@
             <div class="ads-container" id="adsContainer">
                 <div class="ad-wrapper">
                     <!-- First Ad (hidden on mobile) -->
-                    <div class="ad-container mobile-hide">
+                    <div class="ad-container mobile-hide" onclick="closePopupAfterAdClick()">
                         <script type="text/javascript">
                             atOptions = {
                                 'key' : '232b712b4f3926add741ef3dacfa845b',
@@ -462,7 +475,7 @@
                     </div>
                     
                     <!-- Second Ad (hidden on mobile) -->
-                    <div class="ad-container mobile-hide">
+                    <div class="ad-container mobile-hide" onclick="closePopupAfterAdClick()">
                         <script type="text/javascript">
                             atOptions = {
                                 'key' : '0e30a5fb7feed2a39cc356e389549986',
@@ -476,7 +489,7 @@
                     </div>
                     
                     <!-- Third Ad (hidden on mobile) -->
-                    <div class="ad-container mobile-hide">
+                    <div class="ad-container mobile-hide" onclick="closePopupAfterAdClick()">
                         <script type="text/javascript">
                             atOptions = {
                                 'key' : '7c7b5884fcb9c78838bb6fbb2e72739f',
@@ -490,7 +503,7 @@
                     </div>
                     
                     <!-- Fourth Ad -->
-                    <div class="ad-container">
+                    <div class="ad-container" onclick="closePopupAfterAdClick()">
                         <script type="text/javascript">
                             atOptions = {
                                 'key' : '33e30457415285f30adcef808fd7325a',
@@ -802,22 +815,6 @@
                     e.stopPropagation();
                 }
             });
-            
-            // Handle the case where an ad creates an anchor link when clicked
-            document.body.addEventListener('mousedown', function(e) {
-                // Store which element was clicked
-                window.lastClickedElement = e.target;
-            });
-            
-            // When a link/anchor click happens, check if it was inside an ad container
-            document.body.addEventListener('click', function(e) {
-                if (e.target.tagName === 'A' || e.target.closest('a')) {
-                    // If this link is inside an ad container, close the popup
-                    if (window.lastClickedElement && window.lastClickedElement.closest('.ad-container')) {
-                        closePopup();
-                    }
-                }
-            }, true);
         });
         
         // Additional handlers for ad interaction
