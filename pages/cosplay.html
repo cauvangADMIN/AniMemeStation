@@ -607,13 +607,13 @@
             try {
                 const directoryPath = '../assets/images/cosplay/';
                 const images = [];
-                const totalToCheck = 360; // Total Check Images
+                const totalToCheck = 369; // Total Check Images
                 
                 console.log("Checking for existing images...");
                 
                 // Check each potential image file
                 for (let i = 1; i <= totalToCheck; i++) {
-                    const imgPath = `${directoryPath}cosplay-${i}.jpg`;
+                    const imgPath = `${directoryPath}cosplay-${i}.webp`;
                     images.push({
                         id: i,
                         src: imgPath,
