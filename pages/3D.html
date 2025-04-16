@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AniMemeStation - Meme</title>
+    <title>AniMemeStation - 3D Model</title>
     <style>
         * {
             margin: 0;
@@ -111,8 +111,8 @@
             to { opacity: 1; }
         }
         
-        /* Slider Styles */
-        .meme-slider {
+        /* 3D Model Container Styles */
+        .model-container {
             width: 100%;
             height: 80%;
             position: relative;
@@ -123,6 +123,9 @@
             transform: scale(0.95);
             opacity: 0;
             animation: zoomIn 0.7s ease-out 0.6s forwards;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
         
         @keyframes zoomIn {
@@ -136,40 +139,29 @@
             }
         }
         
-        .meme-slide {
-            position: absolute;
+        .iframe-container {
+            position: relative;
             width: 100%;
             height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            transition: transform 0.5s ease-out;
-            background-color: white;
-            border-radius: 20px;
-            padding: 5px;
             overflow: hidden;
-        }
-        
-        .meme-slide img {
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: contain;
             border-radius: 10px;
         }
         
-        .meme-slide.active {
-            transform: translateY(0) scale(1);
-            z-index: 2;
+        .model-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 10px;
         }
         
-        .meme-slide.prev {
-            transform: translateY(-110%) scale(0.8);
-            z-index: 1;
-        }
-        
-        .meme-slide.next {
-            transform: translateY(110%) scale(0.8);
-            z-index: 1;
+        .click-interceptor {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 40px;
+            z-index: 10;
+            cursor: not-allowed;
         }
         
         .slide-controls {
@@ -241,33 +233,10 @@
             }
         }
         
-        .qr-title {
-            font-size: 33px;
-            color: #73264d;
-            font-weight: bold;
-            margin-bottom: 25px;
-            text-align: center;
-            opacity: 0;
-            transform: translateY(15px);
-            animation: fadeInUp 0.6s ease-out 0.4s forwards;
-        }
-        
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(15px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        .qr-container {
+        .image-container {
             width: 300px;
-            height: 300px;
+            height: 450px;
             background-color: white;
-            border: 4px solid #73264d;
             border-radius: 20px;
             display: flex;
             justify-content: center;
@@ -278,6 +247,7 @@
             opacity: 0;
             transform: scale(0.9);
             animation: scaleIn 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.6s forwards;
+            margin-bottom: 25px;
         }
         
         @keyframes scaleIn {
@@ -291,13 +261,13 @@
             }
         }
         
-        .qr-code {
-            max-width: 90%;
-            max-height: 90%;
+        .model-image {
+            max-width: 100%;
+            max-height: 100%;
             object-fit: contain;
         }
         
-        .qr-caption {
+        .caption {
             margin-top: 7px;
             font-size: 18px;
             color: #333;
@@ -329,26 +299,11 @@
             100% { transform: rotate(360deg); }
         }
         
-        /* Animation for slide appearance */
-        .meme-slide.active img {
-            animation: fadeScale 0.5s ease-out;
-        }
-        
-        @keyframes fadeScale {
-            from {
-                opacity: 0.7;
-                transform: scale(0.95);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
-        
         /* Button row styles */
         .button-row {
             display: flex;
             justify-content: center;
+            gap: 15px;
             margin-top: 20px;
             width: 100%;
             opacity: 0;
@@ -378,12 +333,20 @@
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
         }
         
-        .ai-btn {
+        .cosplay-btn {
             background-color: #3498db;
         }
         
-        .ai-btn:hover {
+        .cosplay-btn:hover {
             background-color: #2980b9;
+        }
+        
+        .meme-btn {
+            background-color: #e74c3c;
+        }
+        
+        .meme-btn:hover {
+            background-color: #c0392b;
         }
         
         /* Future message styles */
@@ -528,7 +491,7 @@
                 font-size: 35px;
             }
             
-            .meme-slider {
+            .model-container {
                 height: 430px;
                 margin-bottom: 20px;
             }
@@ -545,17 +508,12 @@
 				overflow: visible;
 			}
             
-            .qr-title {
-                font-size: 26px;
-                margin-bottom: 15px;
-            }
-            
-            .qr-container {
+            .image-container {
                 width: 200px;
-                height: 200px;
+                height: 300px;
             }
             
-            .qr-caption {
+            .caption {
                 font-size: 16px;
             }
             
@@ -614,7 +572,7 @@
                 margin-bottom: 10px;
             }
             
-            .meme-slider {
+            .model-container {
                 height: 390px;
             }
             
@@ -627,16 +585,12 @@
                 font-size: 14px;
             }
             
-            .qr-title {
-                font-size: 22px;
+            .image-container {
+                width: 180px;
+                height: 270px;
             }
             
-            .qr-container {
-                width: 250px;
-                height: 250px;
-            }
-            
-            .qr-caption {
+            .caption {
                 font-size: 12px;
             }
             
@@ -689,30 +643,32 @@
         <div id="content-container">
             <div class="content-area">
                 <div class="left-content">
-                    <div class="english-title">Meme luôn cập nhật liên tục</div>
-                    <div class="meme-slider">
-                        <div class="loading-spinner">
-                            <div class="spinner"></div>
+                    <div class="english-title">Xem mô hình 3D</div>
+                    <div class="model-container">
+                        <!-- 3D Model iframe with pointer-events interceptor -->
+                        <div class="iframe-container" id="model-iframe-container">
+                            <!-- 3D model will be loaded here via JavaScript -->
+                            <div class="click-interceptor"></div>
                         </div>
                     </div>
                     <div class="slide-controls">
                         <button class="control-btn prev-btn">Quay Lại</button>
-                        <div class="slide-counter">0 / 0</div>
+                        <div class="slide-counter" id="model-name"><!-- Model name will be inserted here --></div>
                         <button class="control-btn next-btn">Tiếp Theo</button>
                     </div>
                 </div>
                 
                 <div class="right-content">
-                    <h2 class="qr-title">Donate Me Please</h2>
-                    <div class="qr-container">
-                        <img src="assets/images/QR_Code.png" alt="QR Code" class="qr-code">
+                    <div class="image-container">
+                        <img id="model-2d-image" src="" alt="2D Image" class="model-image">
                     </div>
-                    <p class="qr-caption">Hãy Giúp Tôi Có Thêm Động Lực Để Sản Xuất Meme</p>
-                    <p class="qr-caption">Hãy Giúp Tôi Có Chi Phí Để Lưu Trữ Hình Ảnh, Duy Trì Server</p>
+                    <p class="caption">Hãy Giúp Tôi Có Thêm Động Lực Để Sản Xuất Mô Hình 3D</p>
+                    <p class="caption">Hãy Giúp Tôi Có Chi Phí Để Lưu Trữ Hình Ảnh, Duy Trì Server</p>
                     
                     <!-- Button row -->
                     <div class="button-row">
-                        <button class="action-btn ai-btn">Xem Cosplay</button>
+                        <button class="action-btn meme-btn">Xem Meme</button>
+                        <button class="action-btn cosplay-btn">Xem Cosplay</button>
                     </div>
                     <p class="future-msg">Tương lai sẽ còn nhiều thứ hay ho khác, tôi cần thời gian và tài chính để code thêm chức năng cho trang web</p>
                 </div>
@@ -772,7 +728,7 @@
 						</script>
 					</div>
 					
-										<!-- Four Ad -->
+					<!-- Fourth Ad -->
 					<div class="ad-container">
 						<script type="text/javascript">
 							atOptions = {
@@ -792,351 +748,154 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const sliderContainer = document.querySelector('.meme-slider');
             const prevBtn = document.querySelector('.prev-btn');
             const nextBtn = document.querySelector('.next-btn');
-            const slideCounter = document.querySelector('.slide-counter');
-            const aiButton = document.querySelector('.ai-btn');
-			const adPopup = document.getElementById('adPopup');
-			let popupCloseCount = 0;
-            const adsContainer = document.getElementById('adsContainer');
+            const cosplayButton = document.querySelector('.cosplay-btn');
+            const memeButton = document.querySelector('.meme-btn');
+            const adPopup = document.getElementById('adPopup');
+            const clickInterceptor = document.querySelector('.click-interceptor');
+            const modelNameElement = document.getElementById('model-name');
+            const modelIframeContainer = document.getElementById('model-iframe-container');
+            const model2dImage = document.getElementById('model-2d-image');
+            let popupCloseCount = 0;
             
-            let currentSlide = 0;
-            let allMemeImages = []; // All images paths
-            let loadedMemeImages = []; // Currently loaded images
-            let totalImageCount = 0; // Total count of all available images
-            const batchSize = 25; // Number of images to load per batch
-            let isLoading = false; // Flag to prevent multiple loads
+            // Define the list of 3D models and their corresponding 2D images
+            const modelsList = [
+                {
+                    modelSrc: "https://p3d.in/e/DFWwb+load",
+                    imageSrc: "assets/images/3D/model1.webp",
+                    name: "Model 1"
+                },
+                {
+                    modelSrc: "https://p3d.in/e/KJVEL+load",
+                    imageSrc: "assets/images/3D/model2.webp",
+                    name: "Model 2"
+                },
+                {
+                    modelSrc: "https://p3d.in/e/NSbgl+load",
+                    imageSrc: "assets/images/3D/model3.webp",
+                    name: "Model 3"
+                }
+            ];
             
+            let currentModelIndex = 0;
             
-            // Add event listener for cosplay button
-            aiButton.addEventListener('click', function() {
+            // Function to load the current model
+            function loadCurrentModel() {
+                const currentModel = modelsList[currentModelIndex];
+                
+                // Update iframe
+                modelIframeContainer.innerHTML = `
+                    <iframe allowfullscreen width="100%" height="100%" loading="lazy" frameborder="0" src="${currentModel.modelSrc}" sandbox="allow-scripts allow-same-origin"></iframe>
+                    <div class="click-interceptor"></div>
+                `;
+                
+                // Update 2D image
+                model2dImage.src = currentModel.imageSrc;
+                model2dImage.alt = currentModel.name;
+                
+                // Update model name in slide counter
+                modelNameElement.textContent = currentModel.name;
+                
+                // Reattach click interceptor event
+                const newClickInterceptor = modelIframeContainer.querySelector('.click-interceptor');
+                newClickInterceptor.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    return false;
+                });
+            }
+            
+            // Load the initial model
+            loadCurrentModel();
+            
+            // Prevent default behavior for clicks on the interceptor
+            clickInterceptor.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                return false;
+            });
+            
+            // Add event listener for buttons
+            memeButton.addEventListener('click', function() {
+                window.location.href = 'AniMemeStation.html';
+            });
+            
+            cosplayButton.addEventListener('click', function() {
                 window.location.href = 'pages/cosplay.html';
             });
             
-            // Function to check if device is mobile
-            function isMobileDevice() {
-                return window.innerWidth <= 830;
-            }
-            
-			// Function to show ad popup
-			function showAdPopup() {
-				// Store window.length before showing ads
-				const initialWindowLength = Object.keys(window).length;
-				
-				// Show popup
-				adPopup.style.display = 'flex';
-				setTimeout(() => {
-					adPopup.classList.add('show');
-				}, 10);
-				
-				// Set up document click handler
-				document.addEventListener('click', function clickHandler(event) {
-					// Check after a short delay to allow new window/tab to open
-					setTimeout(() => {
-						// Check if window keys changed (new window opened)
-						const newWindowLength = Object.keys(window).length;
-						if (newWindowLength > initialWindowLength || document.hidden) {
-							// Ad was clicked - close popup
-							closePopupAfterAdClick();
-							document.removeEventListener('click', clickHandler);
-						}
-					}, 500);
-				});
-				
-				// Add visibility change detection for when user returns from ad page
-				document.addEventListener('visibilitychange', function visibilityHandler() {
-					if (document.hidden) {
-						// User likely clicked an ad - close popup when they return
-						setTimeout(() => {
-							closePopupAfterAdClick();
-							document.removeEventListener('visibilitychange', visibilityHandler);
-						}, 500);
-					}
-				});
-			}
-            
-			// Function to fetch all available image paths
-			async function fetchAllImagePaths() {
-				try {
-					// Show loading spinner
-					sliderContainer.innerHTML = `
-						<div class="loading-spinner">
-							<div class="spinner"></div>
-						</div>
-					`;
-					
-					await new Promise(resolve => setTimeout(resolve, 800));
-					
-					// Only load numbered meme files (meme1.jpg, meme2.jpg, etc.)
-					const memeFolder = 'assets/images/meme/';
-					const simulatedPaths = [];
-					
-					// Only check for numbered meme files - no date format files
-					for (let i = 1; i <= 120; i++) { // Simulating 150 possible images
-						simulatedPaths.push(`${memeFolder}meme${i}.webp`);
-					}
-
-					const imagePromises = simulatedPaths.map(src => {
-						return new Promise(resolve => {
-							const img = new Image();
-							img.onload = () => resolve({ src, exists: true });
-							img.onerror = () => resolve({ src, exists: false });
-							img.src = src;
-						});
-					});
-					
-					// Wait for all images to be checked
-					const results = await Promise.all(imagePromises);
-					
-					// Filter out the images that exist
-					const existingImages = results
-						.filter(result => result.exists)
-						.map(result => result.src);
-					
-					if (existingImages.length > 0) {
-						// Sort images numerically
-						allMemeImages = sortImagesByNumber(existingImages);
-						totalImageCount = allMemeImages.length;
-						
-						// Load first batch of images
-						await loadImageBatch(0);
-					} else {
-						// No images found
-						handleNoImagesFound();
-					}
-					
-				} catch (error) {
-					console.error('Error fetching meme images:', error);
-					handleFetchError();
-				}
-			}
-			
-			// Sort images by numeric order (highest to lowest)
-			function sortImagesByNumber(images) {
-				return images.sort((a, b) => {
-					const getImageNumber = (path) => {
-						const filename = path.split('/').pop();
-						// Extract the number from "memeX.jpg"
-						const numMatch = filename.match(/meme(\d+)\.webp/i);
-						if (numMatch) {
-							return parseInt(numMatch[1], 10);
-						}
-						return 0;
-					};
-					
-					// Sort in descending order (highest to lowest)
-					return getImageNumber(b) - getImageNumber(a);
-				});
-			}
-            
-            // Function to load a batch of images starting from the given index
-            async function loadImageBatch(startIndex) {
-                if (isLoading) return;
-                isLoading = true;
+            // Function to show ad popup
+            function showAdPopup() {
+                // Store window.length before showing ads
+                const initialWindowLength = Object.keys(window).length;
                 
-                try {
-                    // Show loading spinner if first batch
-                    if (loadedMemeImages.length === 0) {
-                        sliderContainer.innerHTML = `
-                            <div class="loading-spinner">
-                                <div class="spinner"></div>
-                            </div>
-                        `;
-                    }
-                    
-                    // Calculate end index for current batch
-                    const endIndex = Math.min(startIndex + batchSize, allMemeImages.length);
-                    
-                    // If we've already loaded all images, don't do anything
-                    if (startIndex >= allMemeImages.length) {
-                        isLoading = false;
-                        return;
-                    }
-                    
-                    // Simulate loading delay
-                    if (loadedMemeImages.length > 0) {
-                        await new Promise(resolve => setTimeout(resolve, 300));
-                    }
-                    
-                    // Get image paths for this batch
-                    const batchPaths = allMemeImages.slice(startIndex, endIndex);
-                    
-                    // Add new batch to loaded images
-                    loadedMemeImages = [...loadedMemeImages, ...batchPaths];
-                    
-                    // Create or update slides
-                    createSlides();
-                    
-                    isLoading = false;
-                } catch (error) {
-                    console.error('Error loading image batch:', error);
-                    isLoading = false;
-                }
-            }
-            
-            // Create slides for currently loaded images
-            function createSlides() {
-                sliderContainer.innerHTML = '';
+                // Show popup
+                adPopup.style.display = 'flex';
+                setTimeout(() => {
+                    adPopup.classList.add('show');
+                }, 10);
                 
-                if (loadedMemeImages.length === 0) {
-                    handleNoImagesFound();
-                    return;
-                }
-                
-                loadedMemeImages.forEach((image, index) => {
-                    const slide = document.createElement('div');
-                    slide.className = 'meme-slide';
-                    
-                    // Set initial position classes
-                    if (index === currentSlide) {
-                        slide.classList.add('active');
-                    } else if (index < currentSlide) {
-                        slide.classList.add('prev');
-                    } else {
-                        slide.classList.add('next');
-                    }
-                    
-                    const img = document.createElement('img');
-                    img.src = image;
-                    img.alt = `Meme ${index + 1}`;
-                    
-                    slide.appendChild(img);
-                    sliderContainer.appendChild(slide);
+                // Set up document click handler
+                document.addEventListener('click', function clickHandler(event) {
+                    // Check after a short delay to allow new window/tab to open
+                    setTimeout(() => {
+                        // Check if window keys changed (new window opened)
+                        const newWindowLength = Object.keys(window).length;
+                        if (newWindowLength > initialWindowLength || document.hidden) {
+                            // Ad was clicked - close popup
+                            closePopupAfterAdClick();
+                            document.removeEventListener('click', clickHandler);
+                        }
+                    }, 500);
                 });
                 
-                updateCounter();
-            }
-            
-            // Handle no images found
-            function handleNoImagesFound() {
-                sliderContainer.innerHTML = `
-                    <div style="display: flex; justify-content: center; align-items: center; height: 100%; padding: 20px; text-align: center;">
-                        <p style="color: #666;">Không tìm thấy hình ảnh meme nào. Vui lòng thử lại sau.</p>
-                    </div>
-                `;
-                slideCounter.textContent = "0 / 0";
-            }
-            
-            // Handle fetch error
-            function handleFetchError() {
-                sliderContainer.innerHTML = `
-                    <div style="display: flex; justify-content: center; align-items: center; height: 100%; padding: 20px; text-align: center;">
-                        <p style="color: #666;">Đã xảy ra lỗi khi tải hình ảnh. Vui lòng thử lại sau.</p>
-                    </div>
-                `;
-                slideCounter.textContent = "0 / 0";
-            }
-            
-            // Update slide counter
-            function updateCounter() {
-                if (loadedMemeImages.length === 0) {
-                    slideCounter.textContent = "0 / 0";
-                } else {
-                    slideCounter.textContent = `${currentSlide + 1} / ${totalImageCount}`;
-                }
-            }
-            
-            // Go to next slide
-            function nextSlide() {
-                if (loadedMemeImages.length === 0) return;
-                
-                // Check if we need to load more images
-                if (currentSlide === loadedMemeImages.length - 3 && loadedMemeImages.length < allMemeImages.length) {
-                    loadImageBatch(loadedMemeImages.length);
-                }
-                
-                if (currentSlide < loadedMemeImages.length - 1) {
-                    currentSlide++;
-                    updateSlides();
-                }
-            }
-            
-            // Go to previous slide
-            function prevSlide() {
-                if (loadedMemeImages.length === 0) return;
-                
-                if (currentSlide > 0) {
-                    currentSlide--;
-                    updateSlides();
-                }
-            }
-            
-            // Update slide positions
-            function updateSlides() {
-                const slides = document.querySelectorAll('.meme-slide');
-                
-                slides.forEach((slide, index) => {
-                    slide.classList.remove('active', 'prev', 'next');
-                    
-                    if (index === currentSlide) {
-                        slide.classList.add('active');
-                    } else if (index < currentSlide) {
-                        slide.classList.add('prev');
-                    } else {
-                        slide.classList.add('next');
+                // Add visibility change detection for when user returns from ad page
+                document.addEventListener('visibilitychange', function visibilityHandler() {
+                    if (document.hidden) {
+                        // User likely clicked an ad - close popup when they return
+                        setTimeout(() => {
+                            closePopupAfterAdClick();
+                            document.removeEventListener('visibilitychange', visibilityHandler);
+                        }, 500);
                     }
                 });
-                
-                updateCounter();
             }
             
-            // Add touch swipe functionality
-            let touchStartY = 0;
-            let touchEndY = 0;
-            
-            sliderContainer.addEventListener('touchstart', function(e) {
-                touchStartY = e.changedTouches[0].screenY;
-            });
-            
-            sliderContainer.addEventListener('touchend', function(e) {
-                touchEndY = e.changedTouches[0].screenY;
-                handleSwipe();
-            });
-            
-            function handleSwipe() {
-                const swipeDistance = touchEndY - touchStartY;
-                
-                if (swipeDistance > 50) {
-                    // Swipe down, go to previous slide
-                    prevSlide();
-                } else if (swipeDistance < -50) {
-                    // Swipe up, go to next slide
-                    nextSlide();
-                }
+            // Function to close popup after ad click
+            function closePopupAfterAdClick() {
+                adPopup.classList.remove('show');
+                setTimeout(() => {
+                    adPopup.style.display = 'none';
+                    
+                    // Increment the close count
+                    popupCloseCount++;
+                    
+                    // Set timeout for next popup display
+                    if (popupCloseCount === 1) {
+                        // Show popup again after 3 minute
+                        setTimeout(showAdPopup, 3 * 60 * 1000);
+                    } else if (popupCloseCount === 2) {
+                        // Show popup again after 4 minutes
+                        setTimeout(showAdPopup, 4 * 60 * 1000);
+                    }
+                }, 500);
             }
-			
-            
-            // Button event listeners
-            prevBtn.addEventListener('click', prevSlide);
-            nextBtn.addEventListener('click', nextSlide);
-            
-            // Initialize
-            fetchAllImagePaths();
             
             // Show ad popup after 1min
             setTimeout(showAdPopup, 60000);
-			
-    // Function to close popup after ad click
-    function closePopupAfterAdClick() {
-        adPopup.classList.remove('show');
-        setTimeout(() => {
-            adPopup.style.display = 'none';
             
-            // Increment the close count
-            popupCloseCount++;
+            // Add navigation functionality
+            prevBtn.addEventListener('click', function() {
+                currentModelIndex = (currentModelIndex - 1 + modelsList.length) % modelsList.length;
+                loadCurrentModel();
+            });
             
-            // Set timeout for next popup display
-            if (popupCloseCount === 1) {
-                // Show popup again after 3 minute
-                setTimeout(showAdPopup, 3 * 60 * 1000);
-            } else if (popupCloseCount === 2) {
-                // Show popup again after 4 minutes
-                setTimeout(showAdPopup, 4 * 60 * 1000);
-            }
-        }, 500);
-    }
-});
+            nextBtn.addEventListener('click', function() {
+                currentModelIndex = (currentModelIndex + 1) % modelsList.length;
+                loadCurrentModel();
+            });
+        });
     </script>
 </body>
 </html>
