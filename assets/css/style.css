@@ -49,7 +49,7 @@ nav a {
     font-size: 20px;
 }
 
-nav a[href="../pages/3D.html"] {
+nav a[href="AniMemeStation.html"] {
     text-decoration: underline;
     text-underline-offset: 6px;
 }
@@ -89,7 +89,7 @@ nav a[href="../pages/3D.html"] {
 }
 
 .english-title {
-    font-size: 32px;
+    font-size: 35px;
     color: #333;
     font-weight: bold;
     letter-spacing: 0px;
@@ -104,8 +104,8 @@ nav a[href="../pages/3D.html"] {
     to { opacity: 1; }
 }
 
-/* 3D Model Container Styles */
-.model-container {
+/* Slider Styles */
+.meme-slider {
     width: 100%;
     height: 80%;
     position: relative;
@@ -116,9 +116,6 @@ nav a[href="../pages/3D.html"] {
     transform: scale(0.95);
     opacity: 0;
     animation: zoomIn 0.7s ease-out 0.6s forwards;
-    display: flex;
-    justify-content: center;
-    align-items: center;
 }
 
 @keyframes zoomIn {
@@ -132,53 +129,40 @@ nav a[href="../pages/3D.html"] {
     }
 }
 
-.iframe-container {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    border-radius: 10px;
-}
-
-.model-container iframe {
-    width: 100%;
-    height: 100%;
-    border: none;
-    border-radius: 10px;
-}
-/* Remove the full overlay style since we don't need it */
-.click-interceptor-overlay {
-    display: none;
-}
-
-/* Update the click interceptor styles */
-.click-interceptor {
+.meme-slide {
     position: absolute;
-    z-index: 10;
-    cursor: default;
-    pointer-events: all;
-    background-color: transparent;
-}
-
-.top-interceptor {
-    top: 0;
-    left: 0;
     width: 100%;
-    height: 40px; /* Height to cover just the tabs */
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: transform 0.5s ease-out;
+    background-color: white;
+    border-radius: 20px;
+    padding: 5px;
+    overflow: hidden;
 }
 
-.bottom-interceptor {
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 40px;
+.meme-slide img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    border-radius: 10px;
 }
 
-.right-interceptor {
-    top: 40px; /* Position below the top interceptor */
-    right: 0;
-    width: 40px; /* Width to cover just the right side buttons */
-    height: calc(100% - 80px); /* Cover from below top to above bottom */
+.meme-slide.active {
+    transform: translateY(0) scale(1);
+    z-index: 2;
+}
+
+.meme-slide.prev {
+    transform: translateY(-110%) scale(0.8);
+    z-index: 1;
+}
+
+.meme-slide.next {
+    transform: translateY(110%) scale(0.8);
+    z-index: 1;
 }
 
 .slide-controls {
@@ -250,10 +234,33 @@ nav a[href="../pages/3D.html"] {
     }
 }
 
-.image-container {
+.qr-title {
+    font-size: 33px;
+    color: #73264d;
+    font-weight: bold;
+    margin-bottom: 25px;
+    text-align: center;
+    opacity: 0;
+    transform: translateY(15px);
+    animation: fadeInUp 0.6s ease-out 0.4s forwards;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.qr-container {
     width: 300px;
-    height: 450px;
+    height: 300px;
     background-color: white;
+    border: 4px solid #73264d;
     border-radius: 20px;
     display: flex;
     justify-content: center;
@@ -264,7 +271,6 @@ nav a[href="../pages/3D.html"] {
     opacity: 0;
     transform: scale(0.9);
     animation: scaleIn 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.6s forwards;
-    margin-bottom: 25px;
 }
 
 @keyframes scaleIn {
@@ -278,15 +284,13 @@ nav a[href="../pages/3D.html"] {
     }
 }
 
-.model-image {
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: cover;
-    width: 100%;
-    height: 100%;
+.qr-code {
+    max-width: 90%;
+    max-height: 90%;
+    object-fit: contain;
 }
 
-.caption {
+.qr-caption {
     margin-top: 7px;
     font-size: 18px;
     color: #333;
@@ -302,19 +306,6 @@ nav a[href="../pages/3D.html"] {
     align-items: center;
     height: 100%;
     width: 100%;
-    position: absolute;
-    top: 0;
-    left: 0;
-    background-color: rgba(248, 248, 248, 0.7);
-    z-index: 5;
-    flex-direction: column;
-}
-
-.loading-text {
-    color: #e74c3c;
-    font-size: 14px;
-    margin-top: 10px;
-    font-weight: bold;
 }
 
 .spinner {
@@ -331,17 +322,33 @@ nav a[href="../pages/3D.html"] {
     100% { transform: rotate(360deg); }
 }
 
+/* Animation for slide appearance */
+.meme-slide.active img {
+    animation: fadeScale 0.5s ease-out;
+}
+
+@keyframes fadeScale {
+    from {
+        opacity: 0.7;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
 /* Button row styles */
 .button-row {
     display: flex;
     justify-content: center;
-    gap: 15px;
     margin-top: 20px;
     width: 100%;
     opacity: 0;
     animation: fadeIn 0.6s ease-out 1s forwards;
 }
 
+/* Add or modify these styles for the buttons */
 .action-btn {
     padding: 10px 20px;
     font-size: 16px;
@@ -353,6 +360,28 @@ nav a[href="../pages/3D.html"] {
     transition: all 0.3s ease;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
     white-space: nowrap;
+    margin: 0 8px; /* Add margin to both sides of buttons */
+}
+
+/* Style for the 3D button - change to orange */
+.threed-btn {
+    background-color: #e67e22; /* Orange color */
+    margin-left: 15px; /* Increase left margin for more spacing */
+}
+
+.threed-btn:hover {
+    background-color: #d35400; /* Darker orange on hover */
+}
+
+/* For mobile, adjust the spacing as well */
+@media screen and (max-width: 830px) {
+    .action-btn {
+        margin: 0 5px; /* Smaller margins on mobile */
+    }
+    
+    .threed-btn {
+        margin-left: 12px; /* Still keep some spacing on mobile */
+    }
 }
 
 .action-btn:hover {
@@ -365,20 +394,12 @@ nav a[href="../pages/3D.html"] {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
 }
 
-.cosplay-btn {
+.ai-btn {
     background-color: #3498db;
 }
 
-.cosplay-btn:hover {
+.ai-btn:hover {
     background-color: #2980b9;
-}
-
-.meme-btn {
-    background-color: #e74c3c;
-}
-
-.meme-btn:hover {
-    background-color: #c0392b;
 }
 
 /* Future message styles */
@@ -523,7 +544,7 @@ nav a[href="../pages/3D.html"] {
         font-size: 35px;
     }
     
-    .model-container {
+    .meme-slider {
         height: 430px;
         margin-bottom: 20px;
     }
@@ -536,42 +557,18 @@ nav a[href="../pages/3D.html"] {
     .right-content {
         flex: none;
         height: auto;
-        padding: 5px 0;
+        padding: 20px 0;
         overflow: visible;
+        /* Add this to change the order of elements */
         display: flex;
         flex-direction: column;
     }
     
-    /* Reorder elements in right-content for mobile */
-    .right-content .button-row {
-        order: 1;
-        margin-bottom: 20px;
-        margin-top: 0;
-    }
-    
-    .right-content .image-container {
-        order: 2;
-        width: 200px;
-        height: 300px;
-    }
-    
-    .right-content .caption {
-        order: 3;
-    }
-    
-    .right-content .future-msg {
-        order: 4;
-    }
-    
-    #content-container {
-        flex: 1;
-        min-height: 600px;
-    }
-    
-    /* Adjust button row for mobile */
+    /* Move button row above QR title on mobile */
     .button-row {
-        flex-wrap: nowrap;
-        gap: 10px;
+        order: -1;
+        margin-top: 0;
+        margin-bottom: 20px;
     }
     
     .action-btn {
@@ -614,11 +611,11 @@ nav a[href="../pages/3D.html"] {
     }     
     
     .english-title {
-        font-size: 22px;
+        font-size: 25px;
         margin-bottom: 10px;
     }
     
-    .model-container {
+    .meme-slider {
         height: 390px;
     }
     
@@ -631,12 +628,16 @@ nav a[href="../pages/3D.html"] {
         font-size: 14px;
     }
     
-    .image-container {
-        width: 180px;
-        height: 270px;
+    .qr-title {
+        font-size: 22px;
     }
     
-    .caption {
+    .qr-container {
+        width: 250px;
+        height: 250px;
+    }
+    
+    .qr-caption {
         font-size: 12px;
     }
     
