@@ -4,640 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AniMemeStation - 3D Model</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: Arial, sans-serif;
-        }
-        
-		body {
-			background-color: #432456;
-			background-image: linear-gradient(135deg, #432456 0%, #5a3069 100%);
-			color: #fff;
-			overflow-x: hidden;
-			display: flex;
-			justify-content: center;
-			align-items: flex-start;
-			min-height: 100vh;
-			padding: 20px;
-			padding-top: calc(10vh);
-		}
-        
-        .container {
-            width: 1500px;
-            height: 781px;
-            max-width: 100%;
-            max-height: 100vh;
-            background-color: white;
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            position: relative;
-            display: flex;
-            flex-direction: column;
-        }
-        
-        nav {
-            padding: 25px;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: flex-start;
-        }
-        
-        nav a {
-            margin-right: 38px;
-            margin-bottom: 12px;
-            text-decoration: none;
-            color: #333;
-            font-weight: bold;
-            position: relative;
-            font-size: 20px;
-        }
-        
-        nav a[href="AniMemeStation.html"] {
-            text-decoration: underline;
-            text-underline-offset: 6px;
-        }
-        
-        #content-container {
-            flex: 1;
-            display: flex;
-            overflow: hidden;
-        }
-        
-        .content-area {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            padding: 0 25px 25px;
-        }
-        
-        .left-content {
-            flex: 1;
-            padding-right: 25px;
-            position: relative;
-            overflow: hidden;
-            opacity: 0;
-            transform: translateX(-30px);
-            animation: slideInRight 0.8s ease-out forwards;
-        }
-        
-        @keyframes slideInRight {
-            from {
-                opacity: 0;
-                transform: translateX(-30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
- 
-        .english-title {
-            font-size: 35px;
-            color: #333;
-            font-weight: bold;
-            letter-spacing: 0px;
-            margin-bottom: 15px;
-            text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.1);
-            opacity: 0;
-            animation: fadeIn 0.6s ease-out 0.4s forwards;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        
-        /* 3D Model Container Styles */
-        .model-container {
-            width: 100%;
-            height: 80%;
-            position: relative;
-            overflow: hidden;
-            background-color: #f8f8f8;
-            border-radius: 20px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            transform: scale(0.95);
-            opacity: 0;
-            animation: zoomIn 0.7s ease-out 0.6s forwards;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        
-        @keyframes zoomIn {
-            from {
-                opacity: 0;
-                transform: scale(0.95);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
-        
-        .iframe-container {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            border-radius: 10px;
-        }
-        
-        .model-container iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-            border-radius: 10px;
-        }
-        
-        .click-interceptor {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 40px;
-            z-index: 10;
-            cursor: not-allowed;
-        }
-        
-        .slide-controls {
-            display: flex;
-            justify-content: space-between;
-            width: 100%;
-            padding: 15px 0;
-            opacity: 0;
-            animation: fadeIn 0.5s ease-out 0.8s forwards;
-        }
-        
-        .control-btn {
-            display: inline-block;
-            background-color: #73264d;
-            color: white;
-            padding: 12px 30px;
-            font-size: 18px;
-            font-weight: bold;
-            border-radius: 30px;
-            text-decoration: none;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            transition: all 0.3s ease;
-            cursor: pointer;
-            border: none;
-            margin-top: 5px;
-        }
-        
-        .control-btn:hover {
-            background-color: #5a1d3d;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
-        }
-        
-        .control-btn:active {
-            transform: translateY(1px);
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-        }
-        
-        .slide-counter {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-            color: #333;
-            font-weight: bold;
-        }
-        
-        /* Right Content Styles */
-        .right-content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            position: relative;
-            opacity: 0;
-            transform: translateX(30px);
-            animation: slideInLeft 0.8s ease-out forwards;
-        }
-        
-        @keyframes slideInLeft {
-            from {
-                opacity: 0;
-                transform: translateX(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-        
-        .image-container {
-            width: 300px;
-            height: 450px;
-            background-color: white;
-            border-radius: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-            overflow: hidden;
-            position: relative;
-            opacity: 0;
-            transform: scale(0.9);
-            animation: scaleIn 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.6s forwards;
-            margin-bottom: 25px;
-        }
-        
-        @keyframes scaleIn {
-            from {
-                opacity: 0;
-                transform: scale(0.9);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
-        
-        .model-image {
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: contain;
-        }
-        
-        .caption {
-            margin-top: 7px;
-            font-size: 18px;
-            color: #333;
-            text-align: center;
-            line-height: 1.6;
-            opacity: 0;
-            animation: fadeIn 0.6s ease-out 0.8s forwards;
-        }
+    <link rel="stylesheet" href="../assets/css/3d-styles.css">
+    
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-W9NET4NH9D"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
 
-        .loading-spinner {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100%;
-            width: 100%;
-        }
-        
-        .spinner {
-            border: 5px solid #f3f3f3;
-            border-top: 5px solid #73264d;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            animation: spin 1s linear infinite;
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        /* Button row styles */
-        .button-row {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-top: 20px;
-            width: 100%;
-            opacity: 0;
-            animation: fadeIn 0.6s ease-out 1s forwards;
-        }
-        
-        .action-btn {
-            padding: 10px 20px;
-            font-size: 16px;
-            font-weight: bold;
-            border-radius: 30px;
-            border: none;
-            color: white;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-            white-space: nowrap;
-        }
-        
-        .action-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
-        }
-        
-        .action-btn:active {
-            transform: translateY(1px);
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
-        }
-        
-        .cosplay-btn {
-            background-color: #3498db;
-        }
-        
-        .cosplay-btn:hover {
-            background-color: #2980b9;
-        }
-        
-        .meme-btn {
-            background-color: #e74c3c;
-        }
-        
-        .meme-btn:hover {
-            background-color: #c0392b;
-        }
-        
-        /* Future message styles */
-        .future-msg {
-            margin-top: 15px;
-            font-size: 14px;
-            color: #e74c3c;
-            text-align: center;
-            line-height: 1.4;
-            max-width: 400px;
-            opacity: 0;
-            animation: fadeIn 0.6s ease-out 1.2s forwards;
-        }
-        
-        /* Ad Popup Styles */
-		.popup-overlay {
-			position: fixed;
-			top: 0;
-			left: 0;
-			right: 0;
-			bottom: 0;
-			background-color: rgba(0, 0, 0, 0.7);
-			display: none;
-			justify-content: center;
-			align-items: center;
-			z-index: 1000;
-			opacity: 0;
-			transition: opacity 0.5s ease-in-out;
-		}
-
-		.popup-container {
-			background-color: white;
-			border-radius: 15px;
-			padding: 25px;
-			width: 95%;
-			max-width: 900px;
-			max-height: 90vh;
-			overflow-y: auto;
-			position: relative;
-			box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-			display: flex;
-			flex-direction: column;
-			align-items: center;
-			transform: scale(0.9);
-			transition: transform 0.5s ease-in-out;
-		}
-		
-		.ad-wrapper {
-			display: flex;
-			flex-direction: row;
-			flex-wrap: wrap;
-			justify-content: center;
-			gap: 20px;
-			margin-bottom: 15px;
-		}
-
-        .popup-title {
-            font-size: 23px;
-            color: #333;
-            font-weight: bold;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
-        .ads-container {
-            display: flex;
-            flex-direction: row;
-            justify-content: center;
-            gap: 20px;
-            margin-bottom: 15px;
-        }
-
-		.ad-container {
-			width: 300px;
-			height: 250px;
-			background-color: #f0f0f0;
-			border: 1px solid #ddd;
-			overflow: hidden;
-			position: relative;
-		}
-
-        /* Show animation for popup */
-        .popup-overlay.show {
-            opacity: 1;
-            display: flex;
-        }
-
-        .popup-overlay.show .popup-container {
-            transform: scale(1);
-        }
-        
-        /* Responsive styles */
-        @media screen and (max-width: 1500px) {
-            .container {
-                width: 100%;
-                height: auto;
-                aspect-ratio: 1500/781;
-            }
-        }
-        
-        @media screen and (max-width: 830px) {
-			body {
-				padding-top: 5vh;
-				min-height: 100vh;
-				height: auto;
-				position: relative;
-			}
-            
-			.container {
-				aspect-ratio: auto;
-				height: auto;
-				min-height: 700px;
-				max-height: none;
-			}
-            
-            nav {
-                justify-content: center;
-            }
-            
-			#content-container {
-				flex: 1;
-				min-height: 600px;
-				height: auto;
-				overflow-y: visible;
-			}
-			
-			.content-area {
-				flex-direction: column;
-				padding: 0 15px 20px;
-				height: auto;
-				overflow: visible;
-			}
-            
-            .left-content {
-                padding-right: 0;
-                margin-bottom: 10px;
-                text-align: center;
-                flex: none;
-            }
-
-            .english-title {
-                font-size: 35px;
-            }
-            
-            .model-container {
-                height: 430px;
-                margin-bottom: 20px;
-            }
-            
-            .control-btn {
-                padding: 10px 25px;
-                font-size: 16px;
-            }
-            
-			.right-content {
-				flex: none;
-				height: auto;
-				padding: 20px 0;
-				overflow: visible;
-			}
-            
-            .image-container {
-                width: 200px;
-                height: 300px;
-            }
-            
-            .caption {
-                font-size: 16px;
-            }
-            
-            #content-container {
-                flex: 1;
-                min-height: 600px;
-            }
-            
-            /* Adjust button row for mobile */
-            .button-row {
-                flex-wrap: nowrap;
-                gap: 10px;
-            }
-            
-            .action-btn {
-                padding: 8px 15px;
-                font-size: 14px;
-            }
-            
-            /* Adjust popup for mobile */
-            .popup-container {
-                padding: 15px;
-                max-width: 340px;
-            }
-            
-            .ads-container {
-                flex-direction: column;
-                gap: 10px;
-            }
-
-            .future-msg {
-                font-size: 12px;
-                max-width: 300px;
-            }
-			
-			.mobile-hide {
-				display: none;
-			}
-        }
-        
-        @media screen and (max-width: 480px) {
-			.container {
-				border-radius: 15px;
-				min-height: 650px;
-				height: auto;
-				overflow: visible;
-			}
-            
-            nav a {
-                margin-right: 15px;
-                font-size: 14px;
-            }     
-            
-            .english-title {
-                font-size: 25px;
-                margin-bottom: 10px;
-            }
-            
-            .model-container {
-                height: 390px;
-            }
-            
-            .control-btn {
-                padding: 8px 20px;
-                font-size: 14px;
-            }
-            
-            .slide-counter {
-                font-size: 14px;
-            }
-            
-            .image-container {
-                width: 180px;
-                height: 270px;
-            }
-            
-            .caption {
-                font-size: 12px;
-            }
-            
-			#content-container {
-				min-height: 550px;
-				height: auto;
-				overflow: visible;
-			}
-            
-            /* Further adjust button row for smaller screens */
-            .action-btn {
-                padding: 8px 10px;
-                font-size: 12px;
-            }
-            
-            .popup-title {
-                font-size: 21px;
-                margin-bottom: 15px;
-                margin-top: 15px;
-                padding-left: 10px;
-                padding-right: 10px;
-            }
-
-            .future-msg {
-                font-size: 11px;
-                max-width: 280px;
-            }
-        }
-    </style>
-	
-	<!-- Google tag (gtag.js) -->
-	<script async src="https://www.googletagmanager.com/gtag/js?id=G-W9NET4NH9D"></script>
-	<script>
-	  window.dataLayer = window.dataLayer || [];
-	  function gtag(){dataLayer.push(arguments);}
-	  gtag('js', new Date());
-
-	  gtag('config', 'G-W9NET4NH9D');
-	</script>
-
+      gtag('config', 'G-W9NET4NH9D');
+    </script>
 </head>
 <body>
     <div class="container">
         <nav>
-		    <a href="AniMemeStation.html">Meme</a>
-            <a href="pages/donate.html">Donate</a>
-			<a href="pages/cosplay.html">Cosplay</a>
+		    <a href="../index.html">Meme</a>
+            <a href="../pages/donate.html">Donate</a>
+			<a href="../pages/cosplay.html">Cosplay</a>
+            <a href="../pages/3D.html">3D</a>
         </nav>
         
         <div id="content-container">
@@ -647,6 +32,11 @@
                     <div class="model-container">
                         <!-- 3D Model iframe with pointer-events interceptor -->
                         <div class="iframe-container" id="model-iframe-container">
+                            <!-- Loading spinner for 3D model -->
+                            <div class="loading-spinner" id="model-loading">
+                                <div class="spinner"></div>
+                                <div class="loading-text">Chờ tí, loading...</div>
+                            </div>
                             <!-- 3D model will be loaded here via JavaScript -->
                             <div class="click-interceptor"></div>
                         </div>
@@ -660,93 +50,141 @@
                 
                 <div class="right-content">
                     <div class="image-container">
+                        <!-- Loading spinner for image -->
+                        <div class="loading-spinner" id="image-loading">
+                            <div class="spinner"></div>
+                            <div class="loading-text">Chờ tí, loading...</div>
+                        </div>
                         <img id="model-2d-image" src="" alt="2D Image" class="model-image">
                     </div>
-                    <p class="caption">Hãy Giúp Tôi Có Thêm Động Lực Để Sản Xuất Mô Hình 3D</p>
-                    <p class="caption">Hãy Giúp Tôi Có Chi Phí Để Lưu Trữ Hình Ảnh, Duy Trì Server</p>
+                    <p class="caption">3D Model Được Tạo Bằng AI Nên Chưa Được Hoàn Thiện</p>
+                    <p class="caption">Mục Đích Tạo 3D Chỉ Để Giải Trí</p>
                     
                     <!-- Button row -->
                     <div class="button-row">
                         <button class="action-btn meme-btn">Xem Meme</button>
                         <button class="action-btn cosplay-btn">Xem Cosplay</button>
                     </div>
-                    <p class="future-msg">Tương lai sẽ còn nhiều thứ hay ho khác, tôi cần thời gian và tài chính để code thêm chức năng cho trang web</p>
+                    <p class="future-msg">Hãy Donate Cho Tôi Tại Trang Donate !!</p>
                 </div>
             </div>
         </div>
     </div>
 
-	<script type='text/javascript' src='//snailthreatenedinvited.com/1d/93/84/1d938429755e4bbbb10c782f416c5f33.js'></script>
-	<script type='text/javascript' src='//snailthreatenedinvited.com/1c/33/bd/1c33bd228505b0ef848c24e9c207161a.js'></script>
+    <script type='text/javascript' src='//snailthreatenedinvited.com/fe/59/70/fe5970384daa1cbda2a9fc77ba16e2f0.js'></script>
+    <script type='text/javascript' src='//snailthreatenedinvited.com/ea/a2/39/eaa239929b9579a33b3733ca91118f98.js'></script>
 
-	
-	<!-- Ad Popup HTML -->
-	<div class="popup-overlay" id="adPopup">
-		<div class="popup-container">
-			<div class="popup-title">Nhấn vào quảng cáo<br>bất kỳ để đóng cửa sổ này !!</div>
-			<div class="ads-container" id="adsContainer">
-				<div class="ad-wrapper">
-					<!-- First Ad (hidden on mobile) -->
-					<div class="ad-container mobile-hide">
-						<script type="text/javascript">
-							atOptions = {
-								'key' : '232b712b4f3926add741ef3dacfa845b',
-								'format' : 'iframe',
-								'height' : 250,
-								'width' : 300,
-								'params' : {}
-							};
-							document.write('<scr' + 'ipt type="text/javascript" src="//snailthreatenedinvited.com/232b712b4f3926add741ef3dacfa845b/invoke.js"></scr' + 'ipt>');
-						</script>
-					</div>
-					
-					<!-- Second Ad (hidden on mobile) -->
-					<div class="ad-container mobile-hide">
-						<script type="text/javascript">
-							atOptions = {
-								'key' : '0e30a5fb7feed2a39cc356e389549986',
-								'format' : 'iframe',
-								'height' : 250,
-								'width' : 300,
-								'params' : {}
-							};
-							document.write('<scr' + 'ipt type="text/javascript" src="//snailthreatenedinvited.com/0e30a5fb7feed2a39cc356e389549986/invoke.js"></scr' + 'ipt>');
-						</script>
-					</div>
-					
-					<!-- Third Ad (hidden on mobile) -->
-					<div class="ad-container mobile-hide">
-						<script type="text/javascript">
-							atOptions = {
-								'key' : '7c7b5884fcb9c78838bb6fbb2e72739f',
-								'format' : 'iframe',
-								'height' : 250,
-								'width' : 300,
-								'params' : {}
-							};
-							document.write('<scr' + 'ipt type="text/javascript" src="//snailthreatenedinvited.com/7c7b5884fcb9c78838bb6fbb2e72739f/invoke.js"></scr' + 'ipt>');
-						</script>
-					</div>
-					
-					<!-- Fourth Ad -->
-					<div class="ad-container">
-						<script type="text/javascript">
-							atOptions = {
-								'key' : '33e30457415285f30adcef808fd7325a',
-								'format' : 'iframe',
-								'height' : 250,
-								'width' : 300,
-								'params' : {}
-							};
-							document.write('<scr' + 'ipt type="text/javascript" src="//snailthreatenedinvited.com/33e30457415285f30adcef808fd7325a/invoke.js"></scr' + 'ipt>');
-						</script>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+    
+    <!-- Ad Popup HTML -->
+    <div class="popup-overlay" id="adPopup">
+        <div class="popup-container">
+            <div class="popup-title">Nhấn vào quảng cáo<br>bất kỳ để đóng cửa sổ này !!</div>
+            <div class="ads-container" id="adsContainer">
+                <div class="ad-wrapper">
+                    <!-- First Ad (hidden on mobile) -->
+                    <div class="ad-container mobile-hide">
+                        <script type="text/javascript">
+                            atOptions = {
+                                'key' : '232b712b4f3926add741ef3dacfa845b',
+                                'format' : 'iframe',
+                                'height' : 250,
+                                'width' : 300,
+                                'params' : {}
+                            };
+                            document.write('<scr' + 'ipt type="text/javascript" src="//snailthreatenedinvited.com/232b712b4f3926add741ef3dacfa845b/invoke.js"></scr' + 'ipt>');
+                        </script>
+                    </div>
+                    
+                    <!-- Second Ad (hidden on mobile) -->
+                    <div class="ad-container mobile-hide">
+                        <script type="text/javascript">
+                            atOptions = {
+                                'key' : '6451bd15ef23dd53fc63133c49a41a32',
+                                'format' : 'iframe',
+                                'height' : 250,
+                                'width' : 300,
+                                'params' : {}
+                            };
+                            document.write('<scr' + 'ipt type="text/javascript" src="//snailthreatenedinvited.com/6451bd15ef23dd53fc63133c49a41a32/invoke.js"></scr' + 'ipt>');
+                        </script>
+                    </div>
+                    
+                    <!-- Third Ad (hidden on mobile) -->
+                    <div class="ad-container mobile-hide">
+                        <script type="text/javascript">
+                            atOptions = {
+                                'key' : '7c7b5884fcb9c78838bb6fbb2e72739f',
+                                'format' : 'iframe',
+                                'height' : 250,
+                                'width' : 300,
+                                'params' : {}
+                            };
+                            document.write('<scr' + 'ipt type="text/javascript" src="//snailthreatenedinvited.com/7c7b5884fcb9c78838bb6fbb2e72739f/invoke.js"></scr' + 'ipt>');
+                        </script>
+                    </div>
+                    
+                    <!-- Fourth Ad -->
+                    <div class="ad-container">
+                        <script type="text/javascript">
+                            atOptions = {
+                                'key' : '0e30a5fb7feed2a39cc356e389549986',
+                                'format' : 'iframe',
+                                'height' : 250,
+                                'width' : 300,
+                                'params' : {}
+                            };
+                            document.write('<scr' + 'ipt type="text/javascript" src="//snailthreatenedinvited.com/0e30a5fb7feed2a39cc356e389549986/invoke.js"></scr' + 'ipt>');
+                        </script>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script>
+        // Define setupInterceptors as a global function
+        function setupInterceptors(iframe) {
+            // Wait for iframe content to be accessible
+            setTimeout(() => {
+                try {
+                    // Create a script element to inject into the iframe
+                    const script = document.createElement('script');
+                    script.textContent = `
+                        // Wait for the DOM to be fully loaded
+                        function hideEditTabs() {
+                            // First find the p3d-app container
+                            const appContainer = document.querySelector(".p3d-app");
+                            if (appContainer) {
+                                // Now find the edit tabs within the app container
+                                const el = document.querySelector(".p3d-edit-tabs");
+                                if (el) {
+                                    el.style.display = "none";
+                                    console.log("Successfully hidden p3d-edit-tabs");
+                                    return true;
+                                }
+                            }
+                            
+                            // If element not found, try again after a short delay
+                            console.log("Elements not found yet, retrying...");
+                            setTimeout(hideEditTabs, 500);
+                            return false;
+                        }
+                        
+                        // Start the process
+                        hideEditTabs();
+                    `;
+                    
+                    // Try to inject the script into the iframe
+                    const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+                    iframeDoc.body.appendChild(script);
+                    
+                    console.log("Script injected successfully");
+                } catch (e) {
+                    console.log("Could not access iframe content due to same-origin policy", e);
+                }
+            }, 2000); // Increased timeout to ensure iframe is fully loaded
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
             const prevBtn = document.querySelector('.prev-btn');
             const nextBtn = document.querySelector('.next-btn');
@@ -757,25 +195,68 @@
             const modelNameElement = document.getElementById('model-name');
             const modelIframeContainer = document.getElementById('model-iframe-container');
             const model2dImage = document.getElementById('model-2d-image');
+            const modelLoading = document.getElementById('model-loading');
+            const imageLoading = document.getElementById('image-loading');
             let popupCloseCount = 0;
             
             // Define the list of 3D models and their corresponding 2D images
             const modelsList = [
                 {
+                    modelSrc: "https://p3d.in/e/gznnG+load",
+                    imageSrc: "../assets/images/2D/Mitsuri.webp",
+                    name: "Mitsuri"
+                },
+                {
+                    modelSrc: "https://p3d.in/e/zgk6N+load",
+                    imageSrc: "../assets/images/2D/Android_18.webp",
+                    name: "Android 18"
+                },
+                {
                     modelSrc: "https://p3d.in/e/DFWwb+load",
-                    imageSrc: "assets/images/3D/model1.webp",
-                    name: "Model 1"
+                    imageSrc: "../assets/images/2D/Rossweisse.webp",
+                    name: "Rossweisse"
                 },
                 {
                     modelSrc: "https://p3d.in/e/KJVEL+load",
-                    imageSrc: "assets/images/3D/model2.webp",
-                    name: "Model 2"
+                    imageSrc: "../assets/images/2D/Toga_Himiko.webp",
+                    name: "Toga Himiko"
                 },
                 {
                     modelSrc: "https://p3d.in/e/NSbgl+load",
-                    imageSrc: "assets/images/3D/model3.webp",
-                    name: "Model 3"
+                    imageSrc: "../assets/images/2D/Shark_Girl.webp",
+                    name: "Shark Girl"
+                },
+                {
+                    modelSrc: "https://p3d.in/e/AyFEx+load",
+                    imageSrc: "../assets/images/2D/Bunny_Girl.webp",
+                    name: "Bunny Girl"
+                },
+                {
+                    modelSrc: "https://p3d.in/e/dsTYt+load",
+                    imageSrc: "../assets/images/2D/Astra_Yao.webp",
+                    name: "Astra Yao"
+                },
+                {
+                    modelSrc: "https://p3d.in/e/9nhyU+load",
+                    imageSrc: "../assets/images/2D/The_Nun.webp",
+                    name: "The Nun"
+                },
+                {
+                    modelSrc: "https://p3d.in/e/0YbQN+load",
+                    imageSrc: "../assets/images/2D/Rem.webp",
+                    name: "Rem"
+                },
+                {
+                    modelSrc: "https://p3d.in/e/7QLov+load",
+                    imageSrc: "../assets/images/2D/Nami.webp",
+                    name: "Nami"
+                },
+                {
+                    modelSrc: "https://p3d.in/e/3yAXQ+load",
+                    imageSrc: "../assets/images/2D/Frieren.webp",
+                    name: "Frieren"
                 }
+                
             ];
             
             let currentModelIndex = 0;
@@ -784,26 +265,30 @@
             function loadCurrentModel() {
                 const currentModel = modelsList[currentModelIndex];
                 
+                // Show loading spinners
+                if (modelLoading) modelLoading.style.display = 'flex';
+                if (imageLoading) imageLoading.style.display = 'flex';
+                
                 // Update iframe
                 modelIframeContainer.innerHTML = `
-                    <iframe allowfullscreen width="100%" height="100%" loading="lazy" frameborder="0" src="${currentModel.modelSrc}" sandbox="allow-scripts allow-same-origin"></iframe>
-                    <div class="click-interceptor"></div>
+                    <div class="loading-spinner" id="model-loading">
+                        <div class="spinner"></div>
+                        <div class="loading-text">Chờ tí, loading...</div>
+                    </div>
+                    <iframe allowfullscreen width="100%" height="100%" loading="lazy" frameborder="0" src="${currentModel.modelSrc}" sandbox="allow-scripts allow-same-origin" onload="this.previousElementSibling.style.display='none'; setupInterceptors(this);"></iframe>
                 `;
                 
                 // Update 2D image
                 model2dImage.src = currentModel.imageSrc;
                 model2dImage.alt = currentModel.name;
                 
+                // Hide image loading spinner when image loads
+                model2dImage.onload = function() {
+                    if (imageLoading) imageLoading.style.display = 'none';
+                };
+                
                 // Update model name in slide counter
                 modelNameElement.textContent = currentModel.name;
-                
-                // Reattach click interceptor event
-                const newClickInterceptor = modelIframeContainer.querySelector('.click-interceptor');
-                newClickInterceptor.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    return false;
-                });
             }
             
             // Load the initial model
